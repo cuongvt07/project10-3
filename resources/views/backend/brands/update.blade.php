@@ -28,7 +28,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="bmd-label-floating">Từ Khóa</label>
+                      <label class="bmd-label-floating">Mã</label>
                         <input type="text" name="brand_keyword" value="{{$data->brand_keyword}}" class="form-control">
                       @error('brand_keyword')
                           <span class="text-danger">{{$message}}</span>

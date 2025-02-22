@@ -48,7 +48,7 @@ class ProductRequest extends FormRequest
             'product_name.max' => 'Tên sản phẩm không được ngắn hơn 5 kí tự và dài hơn 50 kí tự',
             'category_id.required' => 'Loại danh mục không được để trống',
             'brand_id.required' => 'Thương hiệu sản phẩm không được để trống',
-            'product_keyword.required' => 'Từ khóa không được để trống',
+            'product_keyword.required' => 'Mã không được để trống',
             'product_description.required' => 'Mô tả không được để trống',
             'product_price_buy.required' => 'Giá nhập không được để trống',
             'product_price_sell.required' => 'Giá bán không được để trống',

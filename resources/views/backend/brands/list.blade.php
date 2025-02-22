@@ -30,7 +30,7 @@
                                         <input type="hidden" value="{{$item->brand_id}}" class="id_delete">
                                         <td>{{$item->brand_keyword}}</td>
                                         <td>{{count($item->product)}}</td>
-                                        <td>Từ khóa: {{$item->brand_keyword}} <br>
+                                        <td>Mã: {{$item->brand_keyword}} <br>
                                             Mô tả: {{$item->brand_description}}
                                         </td>
 

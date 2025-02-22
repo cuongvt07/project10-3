@@ -10,7 +10,6 @@ use App\Http\Controllers\backend\PDFController;
 use App\Http\Controllers\backend\PostController;
 use App\Http\Controllers\backend\ProductController;
 use App\Http\Controllers\backend\RequirementController;
-use App\Http\Controllers\backend\ShipController;
 use App\Http\Controllers\backend\SlideController;
 use App\Http\Controllers\backend\UserController;
 use App\Http\Controllers\BotManController;
@@ -170,15 +169,6 @@ Route::prefix('admin')->middleware('handleLoginAdmin')->group(function () {
     Route::patch('/comments/{id}', [CommentController::class, 'update']);
     Route::patch('/comments/slide/{id}', [CommentController::class, 'slideOn']);
     Route::patch('/comments/off/{id}', [CommentController::class, 'slideOff']);
-
-    //Route ships
-    Route::get('/ships', [ShipController::class, 'index']);
-    Route::get('/ships/create', [ShipController::class, 'create']);
-    Route::get('/ships/{id}/edit', [ShipController::class, 'edit']);
-    Route::post('/ships', [ShipController::class, 'store']);
-    Route::post('/ships/{id}', [ShipController::class, 'update']);
-    Route::delete('/ships/{id}', [ShipController::class, 'destroy']);
-    Route::post('/city-id', [ShipController::class, 'getDataDistricts']);
 
     //Route coupons
     Route::get('/coupons', [CouponController::class, 'index']);

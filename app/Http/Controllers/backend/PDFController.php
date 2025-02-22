@@ -22,9 +22,9 @@ class PDFController extends Controller
             'dataOrderdetail' => $dataOrderdetail
         ];
     
-        $pdf = PDF::loadView('pdf.orderpdf', $data);
-    
-        // return $pdf->download('orderpdf.pdf');
-        return $pdf->stream();
+        $pdf = \PDF::loadView('pdf.orderpdf', $data);
+        $fileName = 'Đơn_hàng_' . $dataOrder->order_id . '_'. date('Ymd') . '.pdf';
+
+        return $pdf->download($fileName);
     }
 }

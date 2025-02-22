@@ -38,7 +38,7 @@
                                         <td class="text-center"><strong>{{$item->category_name}}</strong></td>
 
                                         <td style="width: 350px;" class="text-center">
-                                            <strong>Từ khóa:</strong> {{$item->category_keyword}} <br>
+                                            <strong>Mã:</strong> {{$item->category_keyword}} <br>
                                             <strong>Mô tả:</strong> {{$item->category_description}}
                                         </td>
 
