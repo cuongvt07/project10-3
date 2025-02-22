@@ -28,8 +28,8 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                        <label class="bmd-label-floating">Từ khóa</label>
-                        <input type="text" name="product_keyword" value="{{$data->product_keyword}}" class="form-control">
+                        <label class="bmd-label-floating">Mã sản phẩm</label>
+                        <input type="text" name="product_keyword" value="{{$data->product_keyword}}" class="form-control" readonly>
                         @error('product_keyword')
                           <span class="text-danger">{{$message}}</span>
                         @enderror
@@ -82,7 +82,7 @@
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="bmd-label-floating">Loại Sản Phẩm</label>
+                      <label class="bmd-label-floating">Danh Mục</label>
                       <select name="category_id" class="form-control">
                         <option value="">---Chọn Loại---</option>
                         @foreach ($dataCategory as $item)

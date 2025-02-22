@@ -5,7 +5,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header card-header-primary">
-                        <h4 class="card-title " style="font-weight: bold">Danh Sách Loại Sản Phẩm</h4>
+                        <h4 class="card-title " style="font-weight: bold">Danh Sách Danh Mục</h4>
                     </div>
                     @include('backend.note')
                     <div class="card-body">
@@ -17,9 +17,6 @@
                                 </th>
                                 <th style="width: 150px; font-weight: bold; font-size: 16px;" class="text-center">Tên
                                     Loại
-                                </th>
-                                <th style="width: 100px;font-weight: bold; font-size: 16px;"
-                                    class="text-center product-count">Số sản phẩm
                                 </th>
                                 <th style="width: 350px;font-weight: bold; font-size: 16px;" class="text-center">Thông
                                     tin
@@ -39,9 +36,6 @@
                                         </td>
 
                                         <td class="text-center"><strong>{{$item->category_name}}</strong></td>
-
-                                        <td class="text-center product-count"><strong>{{count($item->product)}}</strong>
-                                        </td>
 
                                         <td style="width: 350px;" class="text-center">
                                             <strong>Từ khóa:</strong> {{$item->category_keyword}} <br>
@@ -93,7 +87,7 @@
 
                                                     <a href="admin/categorys/create"
                                                        class="button-common-add add  mb-2 mt-2 mr-2">
-                                                        <i class="fa-solid fa-plus fa-lg mr-1"></i>Thêm loại sản phẩm
+                                                        <i class="fa-solid fa-plus fa-lg mr-1"></i>Thêm Danh Mục
                                                     </a>
 
                                                     <div
@@ -141,7 +135,7 @@
             var token = $('input[name=_token]').val();
             console.log(selectedIDs);
             swal({
-                title: "Bạn có chắc sẽ xóa khối lượng này?",
+                title: "Bạn có chắc sẽ xóa thương hiệu này?",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,

@@ -151,7 +151,7 @@
     text-transform: uppercase;
 }
 .footer .ft__details p {
-    color: #000000;
+    color: #fff;
     font-size: 16px;
     line-height: 22px;
 }
@@ -169,7 +169,7 @@
     margin-top: 22px;
 }
 .ft__list li a {
-    color: #000000;
+    color: #fff;
     font-size: 16px;
     transition: all 0.4s ease 0s;
 }

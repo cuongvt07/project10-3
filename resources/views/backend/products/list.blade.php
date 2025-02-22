@@ -21,11 +21,10 @@
                                 <th style="width: 150px; font-weight: bold; font-size: 16px; color: #FFFFFF">Tên sản
                                     phẩm
                                 </th>
-                                <th style="width: 150px; font-weight: bold; font-size: 16px;" class="text-center">Loại
-                                    sản phẩm
+                                <th style="width: 150px; font-weight: bold; font-size: 16px;" class="text-center">Danh mục
                                 </th>
                                 <th style="width: 100px;font-weight: bold; font-size: 16px;"
-                                    class="text-center product-count">Loại khối lượng
+                                    class="text-center product-count">Thương hiệu
                                 </th>
                                 <th style="width: 150px;font-weight: bold; font-size: 16px;" class="text-center">Ảnh
                                 </th>
@@ -141,7 +140,7 @@
 
                                             <div class="d-inline-block mb-2 mt-2 mr-2">
                                                 <a href="admin/products/create" class="button-common-add add">
-                                                    <i class="fa-solid fa-plus fa-lg mr-1"></i>Thêm loại sản phẩm
+                                                    <i class="fa-solid fa-plus fa-lg mr-1"></i>Thêm sản phẩm
                                                 </a>
                                             </div>
                                             <form>
@@ -185,7 +184,7 @@
             }
             var token = $('input[name=_token]').val();console.log(selectedIDs);
             swal({
-                title: "Bạn có chắc sẽ xóa khối lượng này?",
+                title: "Bạn có chắc sẽ xóa thương hiệu này?",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,

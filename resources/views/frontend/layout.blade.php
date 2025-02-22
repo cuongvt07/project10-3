@@ -35,6 +35,17 @@
     @yield('style')
     <!-- Modernizr JS -->
     <script src="../frontend_assets/js/vendor/modernizr-3.5.0.min.js"></script>
+
+    <!-- Slick Carousel CSS CDN -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+
+    <!-- jQuery CDN (required for Slick Slider) -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <!-- Slick Carousel JS CDN -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
 </head>
 
 <body>
@@ -58,13 +69,13 @@
                 <div class="container">
                     <div class="row">
                         <!-- Start Single Footer Widget -->
-                        <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="col-md-4 col-sm-6 col-xs-12">
                             <div class="footer">
-                                <h2 class="title__line--2">Thông tin</h2>
                                 <div class="ft__details">
                                     <div class="row">
                                         <div class="col-sm-9">
-                                            <p>SportTm chuyên cung cấp dịch vụ thuê sân bóng nhân tạo, phục vụ các sự kiện thể thao ngoài trời, chất lượng, chuyên nghiệp, chu đáo</p>
+                                            <p>
+                                            Rolex Shop là đại lý bán lẻ đồng hồ chính hãng, cam kết mang đến cho khách hàng trải nghiệm mua sắm dễ dàng, thuận tiện và an toàn trên nhiều nền tảng khác nhau. Chúng tôi cung cấp các sản phẩm từ các thương hiệu đồng hồ uy tín, đảm bảo chất lượng và bảo hành chính hãng.</p>
                                         </div>
                                     </div>
                                     <div class="ft__social__link">
@@ -96,7 +107,7 @@
                         </div>
                         <!-- End Single Footer Widget -->
                         <!-- Start Single Footer Widget -->
-                        <div class="col-md-2 col-sm-6 col-xs-12 xmt-40">
+                        <div class="col-md-3 col-sm-6 col-xs-12 xmt-40">
                             <div class="footer">
                                 <h2 class="title__line--2">kHÔNG GIAN</h2>
                                 <div class="ft__inner">
@@ -110,9 +121,9 @@
                         </div>
                         <!-- End Single Footer Widget -->
                         <!-- Start Single Footer Widget -->
-                        <div class="col-md-2 col-sm-6 col-xs-12 xmt-40">
+                        <div class="col-md-3 col-sm-6 col-xs-12 xmt-40">
                             <div class="footer">
-                                <h2 class="title__line--2">LOẠI SẢN PHẨM</h2>
+                                <h2 class="title__line--2">Danh Mục</h2>
                                 <div class="ft__inner">
                                     <ul class="ft__list">
                                         @foreach ($dataCategory as $item)
@@ -600,7 +611,7 @@
                                 </div>
                                 <div class="shp__pro__details">
                                     <h2><a href="/shop/product/${item['cart_id']}">${item['cart_product']}</a></h2>
-                                    <span class="quantity">QTY: ${item['cart_quantity']}</span>
+                                    <span class="quantity">SL: ${item['cart_quantity']}</span>
                                     <span class="shp__price">${formatter.format(item['cart_price_sale'])+ ' VNĐ'}</span>
                                 </div>
                                 <form>

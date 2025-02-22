@@ -2,13 +2,13 @@
 
 @section('content')
     <!-- Start Product Grid -->
-    <section class="htc__product__grid bg__white ptb--100">
+    <section class="htc__product__grid bg__cat--1 ptb--50">
 
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 col-lg-push-3 col-md-9 col-md-push-3 col-sm-12 col-xs-12">
                     <div class="htc__product__rightidebar">
-                        <div class="htc__grid__top">
+                        <div class="htc__grid__top mtb--10">
                             <div class="htc__select__option">
                                 <form>
                                     @csrf
@@ -52,7 +52,7 @@
                     </div>
                     <!-- End Pagenation -->
                 </div>
-                <div class="col-lg-3 col-lg-pull-9 col-md-3 col-md-pull-9 col-sm-12 col-xs-12 smt-40 xmt-40">
+                <div class="col-lg-3 col-lg-pull-9 col-md-3 col-md-pull-9 col-sm-12 col-xs-12" style="background: #ffffff; padding: 10px">
                     <div class="htc__product__leftsidebar">
                         <!-- Start Prize Range -->
                         <div class="htc-grid-range">
@@ -82,7 +82,7 @@
                         <!-- End Prize Range -->
                         <!-- Start Category Area -->
                         <div class="htc__category">
-                            <h4 class="title__line--4">Loại Sản Phẩm</h4>
+                            <h4 class="title__line--4">Loại Danh Mục</h4>
                             <ul class="ht__cat__list">
                                 @foreach ($dataCategory as $item)
                                 <li><a href="/shop/category/{{$item->category_id}}">{{$item->category_name}}</a></li>
@@ -92,7 +92,7 @@
                         <!-- End Category Area -->
                         <!-- Start Category Area -->
                         <div class="htc__category">
-                            <h4 class="title__line--4">Khối Lượng</h4>
+                            <h4 class="title__line--4">Thương Hiệu</h4>
                             <ul class="ht__cat__list">
                                 @foreach ($dataBrand as $item)
                                 <li><a href="/shop/brand/{{$item->brand_id}}">{{$item->brand_name}}</a></li>

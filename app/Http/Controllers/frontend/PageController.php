@@ -17,6 +17,7 @@ use App\Models\OrderdetailModel;
 use App\Models\PostModel;
 use App\Models\SlideModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Session;
 use Illuminate\Support\Str;
 
@@ -30,7 +31,11 @@ class PageController extends Controller
         $dataBrand = BrandModel::all();
         $dataLogo = SlideModel::where('type', 3)->first();
         $dataLogoFooter = SlideModel::where('type', 4)->first();
-        $this->data_seo = new SeoHelper('Kính chào quý khách', 'Bàn decor, gương decor, thảm decor, ghể decor, tranh decor', 'VINANEON - Chuyên cung cấp những vật phẩm decor uy tín, chất lượng, giá rẻ', '/');
+        $countCart = OrderModel::where('user_id', Auth::id())->where('order_status', 1)
+                ->join('orderdetail', 'orders.order_id', '=', 'orderdetail.order_id')
+                ->count('orderdetail.order_detail_id');
+        $dataLogo = SlideModel::where('type', 3)->first();
+
         view()->share([
             'dataCategory' => $dataCategory,
             'dataBrand' => $dataBrand,
@@ -40,17 +45,23 @@ class PageController extends Controller
             'dataLogoFooter' => $dataLogoFooter,
             'priceMinFilter' => $priceMin+2000000,
             'priceMaxFilter' => $priceMax-2000000,
-            'data_seo' => $this->data_seo,
+            'countCart' => $countCart ?? 0,
+            'dataLogo' => $dataLogo,
         ]);
     }
 
     public function index(){
-        $dataProductNews = ProductModel::orderBy('product_id', 'DESC')->paginate(Constant::NUMBER_PRODUCT);
+        $dataProductNews = ProductModel::orderBy('product_id', 'DESC')->limit(Constant::NUMBER_PRODUCT)->get();
         $dataProductSales = ProductModel::orderBy('product_sale', 'DESC')->limit(Constant::NUMBER_PRODUCT)->get();
-        $dataProductSell = OrderdetailModel::groupBy('product_id')->select('product_id')->limit(Constant::NUMBER_PRODUCT)->get();
+        $dataProductSell = ProductModel::whereIn('product_id', 
+                        OrderdetailModel::select('product_id')
+                                        ->groupBy('product_id')
+                                        ->limit(Constant::NUMBER_PRODUCT)
+                                        ->pluck('product_id') )
+                        ->get();
         $dataComment = CommentModel::where('comment_status', 3)->limit(4)->get();
         $dataSilde = SlideModel::where('active', 1)->where('type', 1)->orderBy('id', 'DESC')->limit(Constant::NUMBER_PRODUCT)->get();
-        $dataBanner = SlideModel::where('active', 1)->where('type', 2)->orderBy('id', 'DESC')->first();
+        $dataBanner = SlideModel::where('active', 1)->where('type', 2)->orderBy('id', 'DESC')->get();
         $dataPost = PostModel::orderBy('id', 'DESC')->limit(4)->get();
 
         return view('frontend.pages.home',[
@@ -65,7 +76,6 @@ class PageController extends Controller
     }
 
     public function shop(){
-        $this->data_seo = new SeoHelper('Cửa hàng','Bàn decor, gương decor, thảm decor, ghể decor, tranh decor', 'VINANEON - Chuyên cung cấp những vật phẩm decor uy tín, chất lượng, giá rẻ', '/shop');
         $dataProductSales = ProductModel::orderBy('product_sale', 'DESC')->limit(Constant::NUMBER_PRODUCT)->get();
 
         if($this->checkFilter()){
@@ -87,14 +97,12 @@ class PageController extends Controller
         return view('frontend.pages.shop',[
             'data' => $data,
             'dataProductSales' => $dataProductSales,
-            'data_seo' => $this->data_seo,
         ]);
     }
 
     public function category($id){
         $dataProductSales = ProductModel::orderBy('product_sale', 'DESC')->limit(4)->get();
         $data_category = CategoryModel::find($id);
-        $this->data_seo = new SeoHelper($data_category->category_name, $data_category->category_keyword, $data_category->category_description, '/shop');
         if($this->checkFilter()){
             // echo $id;
             $price_start = $_GET['price_start'];
@@ -111,14 +119,12 @@ class PageController extends Controller
         return view('frontend.pages.shop',[
             'data' => $data,
             'dataProductSales' => $dataProductSales,
-            'data_seo' => $this->data_seo,
         ]);
     }
 
     public function brand($id){
         $dataProductSales = ProductModel::orderBy('product_sale', 'DESC')->limit(4)->get();
         $data_brand = BrandModel::find($id);
-        $this->data_seo = new SeoHelper($data_brand->brand_name, $data_brand->brand_keyword, $data_brand->brand_description, '/shop');
         if($this->checkFilter()){
             $price_start = $_GET['price_start'];
             $price_end = $_GET['price_end'];
@@ -134,7 +140,6 @@ class PageController extends Controller
         return view('frontend.pages.shop',[
             'data' => $data,
             'dataProductSales' => $dataProductSales,
-            'data_seo' => $this->data_seo,
         ]);
     }
 
@@ -159,7 +164,6 @@ class PageController extends Controller
             }
         }
 
-        $this->data_seo = new SeoHelper($data->product_name, $data->product_keyword, $data->product_description, '/shop/product/'.$id);
 
         return view('frontend.pages.product',[
             'data' => $data,
@@ -167,7 +171,6 @@ class PageController extends Controller
             'dataProductImages' => $dataProductImages,
             'dataComment' => $dataComment,
             'rating' => $rating,
-            'data_seo' => $this->data_seo,
             'data_seo_image' => $data->product_image,
             'checkCmt' => $checkCmt,
         ]);

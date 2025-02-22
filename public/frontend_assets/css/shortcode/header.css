@@ -221,7 +221,7 @@ nav.off__canvars--menu ul li ul li a:hover {
 -----------------------*/
 
 .header__search a i {
-    color: #000000;
+    color: #fff;
     font-size: 19px;
     position: relative;
 }
@@ -230,7 +230,7 @@ nav.off__canvars--menu ul li ul li a:hover {
     position: relative;
 }
 .htc__shopping__cart a i {
-    color: #000000;
+    color: #fff;
     font-size: 19px;
 }
 .htc__shopping__cart  span.htc__qua {
@@ -577,7 +577,7 @@ nav.off__canvars--menu ul li ul li a:hover {
   transition: color 300ms ease 0s;
 }
 .search__area {
-  background: #78b43d none repeat scroll 0 0;
+  background: #c0c5cc none repeat scroll 0 0;
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.08);
   left: 0;
   position: fixed;
@@ -910,7 +910,7 @@ h4.offset__title {
     text-transform: capitalize;
 }
 .shp__pro__details .shp__price {
-    color: #2b8d06;
+    color: #000;
     display: block;
 }
 
@@ -919,7 +919,7 @@ h4.offset__title {
     font-weight: 400;
 }
 .shoping__total .total__price {
-    color: #2b8d06;
+    color: #000;
     float: right;
 }
 .shopping__btn li a {

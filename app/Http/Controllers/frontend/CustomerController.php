@@ -34,13 +34,12 @@ class CustomerController extends Controller
         $dataBrand = BrandModel::all();
         $dataLogo = SlideModel::where('type', 3)->first();
         $dataLogoFooter = SlideModel::where('type', 4)->first();
-        $this->data_seo = new SeoHelper('Kính chào quý khách', 'Bàn decor, gương decor, thảm decor, ghể decor, tranh decor', 'VINANEON - Chuyên cung cấp những vật phẩm decor uy tín, chất lượng, giá rẻ', '/customer');
 
         view()->share(['dataCategory' => $dataCategory,
             'dataBrand' => $dataBrand,
-            'data_seo' => $this->data_seo,
             'dataLogo' => $dataLogo,
-            'dataLogoFooter' => $dataLogoFooter
+            'dataLogoFooter' => $dataLogoFooter,
+
         ]);
     }
 
@@ -220,16 +219,16 @@ class CustomerController extends Controller
     {
         $request->validate([
             'user_phone' => 'required|min:10|max:10',
-            'user_addres' => 'required',
+            'user_address' => 'required',
         ], [
-            'user_addres.required' => 'Địa chỉ không được để trống',
+            'user_address.required' => 'Địa chỉ không được để trống',
             'user_phone.required' => 'Số điện thoại không được để trống',
             'user_phone.min' => 'Số điện thoại sai định dạng',
             'user_phone.max' => 'Số điện thoại sai định dạng',
         ]);
         $data = UserModel::find(Auth::id());
         $data->user_phone = $request->user_phone;
-        $data->user_addres = $request->user_addres;
+        $data->user_address = $request->user_address;
         $data->user_district = $request->user_district;
         $data->user_city = $request->user_city;
 

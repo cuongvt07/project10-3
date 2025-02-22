@@ -28,7 +28,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                        <label class="bmd-label-floating">Từ khóa</label>
+                        <label class="bmd-label-floating">Mã sản phẩm</label>
                         <input type="text" value="{{ old('product_keyword') }}" name="product_keyword" class="form-control">
                         @error('product_keyword')
                           <span class="text-danger">{{$message}}</span>
@@ -82,7 +82,7 @@
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="bmd-label-floating">Loại Sản Phẩm</label>
+                      <label class="bmd-label-floating">Danh Mục</label>
                       <select name="category_id" class="form-control">
                         <option value="">---Chọn Loại---</option>
                         @foreach ($dataCategory as $item)
@@ -96,9 +96,9 @@
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="bmd-label-floating">Khối Lượng</label>
+                      <label class="bmd-label-floating">Thương Hiệu</label>
                       <select name="brand_id" class="form-control">
-                        <option value="">---Chọn Khối Lượng---</option>
+                        <option value="">---Chọn Thương Hiệu---</option>
                         @foreach ($dataBrand as $item)
                           <option value="{{$item->brand_id}}">{{$item->brand_name}}</option>
                         @endforeach

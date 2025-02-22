@@ -11,13 +11,13 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header card-header-primary">
-              <h4 class="card-title">Sửa loại sản phẩm</h4>
+              <h4 class="card-title">Sửa loại danh mục</h4>
             </div>
             <div class="card-body">
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class="bmd-label-floating">Tên loại Sản Phẩm</label>
+                      <label class="bmd-label-floating">Tên loại danh mục</label>
                       <input type="text" name="category_name" value="{{$data->category_name}}" class="form-control">
                       @error('category_name')
                           <span class="text-danger">{{$message}}</span>

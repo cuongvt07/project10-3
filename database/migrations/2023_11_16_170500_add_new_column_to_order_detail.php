@@ -14,7 +14,7 @@ class AddNewColumnToOrderDetail extends Migration
     public function up()
     {
         Schema::table('orderdetail', function (Blueprint $table) {
-            $table->double('weight_product', 5, 2)->after('product_id')->nullable();
+            $table->double('wrist_measurement', 5, 2)->after('product_id')->nullable();
         });
     }
 

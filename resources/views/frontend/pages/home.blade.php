@@ -22,7 +22,7 @@
                             </div>
                             <div class="col-md-7 col-sm-7 col-xs-12 col-lg-6">
                                 <div class="slide__thumb">
-                                    <img src="{{$slide->image}}" style="width: 75%; height: 100%"
+                                    <img src="{{$slide->image}}"
                                          alt="slider images VINANEON">
                                 </div>
                             </div>
@@ -36,12 +36,12 @@
     <!-- Start Slider Area -->
     <!-- Start Product new Area -->
     <section class="htc__category__area ptb--40">
-        <div class="container">
+        <div class="container product-container">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="section__title--2 text-center">
                         <h2 class="title__line">
-                            <a>SẢN PHẨM MỚI</a>
+                            <a>FLASH SALE</a>
                         </h2>
                     </div>
                 </div>
@@ -49,12 +49,10 @@
             <div class="htc__product__container">
                 <div class="row">
                     <div class="product__list clearfix mt--30 mb--20">
-                        @foreach ($dataProductNews as $item)
-                            <!-- Start Single Category -->
-                            <div class="col-md-3 col-lg-3 col-sm-4 col-xs-6 product" style="height: 390px">
+                        @foreach ($dataProductSales as $item)
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 product" style="height: 390px;">
                                 @include('frontend.libs.product')
                             </div>
-                            <!-- End Single Category -->
                         @endforeach
                     </div>
                 </div>
@@ -68,22 +66,33 @@
         <section class="ftr__product__area ptb--40">
             <div class="container-fluid">
                 <center>
-                    <a href="{{$dataBanner->target}}"><img style="max-width: 100%" src="{{$dataBanner->image}}"
-                                                           alt="{{$dataBanner->title}}"></a>
+                    @if (is_array($dataBanner))
+                        <div style="display: flex; justify-content: center;">
+                            @foreach ($dataBanner as $banner)
+                                <a href="{{$banner->target}}" style="margin: 0 10px;">
+                                    <img style="max-width: 100%" src="{{$banner->image}}" alt="{{$banner->title}}">
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <a href="{{$dataBanner[0]->target ?? ''}}">
+                            <img style="max-width: 100%" src="{{$dataBanner[0]->image}}" alt="{{$dataBanner[0]->title}}">
+                        </a>
+                    @endif
                 </center>
             </div>
         </section>
     @endif
     <!-- End Banner Area -->
     <!-- Start Product sale Area -->
-    <section class="ftr__product__area ptb--100">
+    <section class="htc__category__area ptb--40">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="d-none d-md-block">
                         <div class="section__title--2 text-center">
                             <h2 class="title__line">
-                                <a>TOP KHUYẾN MÃI</a>
+                                <a>SẢN PHẨM MỚI</a>
                             </h2>
                         </div>
                     </div>
@@ -91,7 +100,7 @@
             </div>
             <div class="row">
                 <div class="product__list clearfix mt--30">
-                    @foreach ($dataProductSales as $item)
+                    @foreach ($dataProductNews as $item)
                         <!-- Start Single Category -->
                         <div class="col-md-3 col-lg-3 col-sm-4 col-xs-6 product" style="height: 390px">
                             @include('frontend.libs.product')
@@ -122,7 +131,7 @@
                             @foreach($dataComment as $item)
                                 <div class="col-md-4 col-sm-6 col-12 style-3">
                                     <div class="tour-item">
-                                        <div class="tour-desc bg-white" style="height: 300px; overflow-y: auto;">
+                                        <div class="tour-desc bg-white" style="height: 200px">
                                             <div class="link-name text-center">{{ $item->user->user_name }}</div>
                                             <div class="row justify-content-center pt-2 pb-2">
                                                 <div class="col-md-6 col-sm-8 col-12">
@@ -153,13 +162,13 @@
     <!-- End Comment Area -->
     <!-- Start Top Rated Area -->
     @if ($dataProductSell != null)
-        <section class="ftr__product__area ptb--100">
+        <section class="htc__category__area ptb--40">
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="section__title--2 text-center">
                             <h2 class="title__line">
-                                <a>sản phẩm bán chạyI</a>
+                                <a>TOP TREND</a>
                             </h2>
                         </div>
                     </div>
@@ -169,64 +178,7 @@
                         @foreach ($dataProductSell as $item)
                             <!-- Start Single Category -->
                             <div class="col-md-3 col-lg-3 col-sm-4 col-xs-6 product" style="height: 390px">
-                                <div class="category">
-                                    <div class="ht__cat__thumb">
-                                        <span class="sale-span">-{{$item->product->product_sale}}%</span>
-                                        <a href="/shop/product/{{$item->product->product_id}}">
-                                            <img style="max-width: 260px; height: 260px"
-                                                 src="{{$item->product->product_image}}"
-                                                 alt="{{$item->product->product_name}}">
-                                        </a>
-                                    </div>
-                                    <div class="fr__hover__info">
-                                        <form>
-                                            @csrf
-                                            @php
-                                                $product_price_sale = $item->product->product_price_sell - ($item->product->product_price_sell/100 * $item->product->product_sale);
-                                            @endphp
-                                            <input type="hidden" class="cart_product_{{$item->product->product_id}}"
-                                                   value="{{$item->product->product_name}}">
-                                            <input type="hidden" class="cart_price_{{$item->product->product_id}}"
-                                                   value="{{$item->product->product_price_sell}}">
-                                            <input type="hidden" class="cart_price_sale_{{$item->product->product_id}}"
-                                                   value="{{$product_price_sale}}">
-                                            <input type="hidden" class="cart_amount_{{$item->product->product_id}}"
-                                                   value="{{$item->product->product_amount}}">
-                                            <input type="hidden" class="cart_quantity_{{$item->product->product_id}}"
-                                                   value="1">
-                                            <input type="hidden" class="cart_brand_{{$item->product->product_id}}"
-                                                   value="{{$item->product->brand_name}}">
-                                            <input type="hidden" class="cart_image_{{$item->product->product_id}}"
-                                                   value="{{$item->product->product_image}}">
-                                            <ul class="product__action">
-                                                <li>
-                                                    <button class="add_to_cart" data-id="{{$item->product->product_id}}"
-                                                            type="button"><i class="icon-handbag icons"></i></button>
-                                                </li>
-                                            </ul>
-                                        </form>
-                                        <form>
-                                            @csrf
-                                            <li>
-                                                <button class="handle_wishlist"
-                                                        data-product_id="{{$item->product->product_id}}" type="button">
-                                                    <i class="icon-heart icons"></i></button>
-                                            </li>
-                                        </form>
-                                        </ul>
-                                    </div>
-                                    <div class="fr__product__inner">
-                                        <h4>
-                                            <a href="/shop/product/{{$item->product->product_id}}-{{Str::slug($item->product->product_name, '-')}}.html"></a>
-                                        </h4>
-                                        <ul class="fr__pro__prize">
-                                            <li class="old__prize">{{number_format($item->product->product_price_sell)}}
-                                                đ
-                                            </li>
-                                            <li>{{number_format($product_price_sale)}} đ</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                @include('frontend.libs.product')
                             </div>
                             <!-- End Single Category -->
                         @endforeach
@@ -239,13 +191,13 @@
     @endif
     <!-- End Top Rated Area -->
     <!-- Start Blog Area -->
-    <section class="ftr__product__area .ptb--40">
+    <section class="htc__category__area ptb--40">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="section__title--2 text-center">
                         <h2 class="title__line">
-                            <a>Blog Tâm trà</a>
+                            <a>Tin Tức</a>
                         </h2>
                     </div>
                 </div>
@@ -305,7 +257,7 @@
     <!-- End Blog Area -->
     <section class="order-process custom-order-process">
         <div class="container">
-            <h2>Quy trình đặt hàng tại Tâm Trà</h2>
+            <h2>Quy trình đặt hàng tại Rolex Shop</h2>
             <div class="process-steps">
                 <div class="step">
                     <div class="step-icon">
@@ -346,14 +298,14 @@
                 <div class="icon-box order-icon-box">
                     <div class="icon">&#x1F6D2;</div>
                     <h3 class="order-heading">Đặt Hàng 24/7</h3>
-                    <p class="order-contact">0943206425</p>
+                    <p class="order-contact">********8</p>
                 </div>
             </div>
 
             <div class="info-column delivery-column">
                 <div class="icon">&#x1F69A;</div>
                 <h3 class="delivery-heading">Giao Hàng Tận Nơi
-                    <br>TRÀ SẠCH - TRÀ CHÍNH GỐC - TRÀ MỚI
+                    <br>Nhanh Chóng - An Toàn - Tin Cậy
                 </h3>
             </div>
 
@@ -361,7 +313,7 @@
                 <div class="icon-box email-icon-box">
                     <div class="icon">&#x1F4E7;</div>
                     <h3 class="email-heading">Email</h3>
-                    <p class="email-contact">tamtra@gmail.com</p>
+                    <p class="email-contact">*****@gmail.com</p>
                 </div>
             </div>
         </div>
@@ -374,6 +326,7 @@
     <script>
         $('.add_to_cart').click(function () {
             var id = $(this).data('id');
+            var type = 'add-to-cart';
             var _token = $('input[name=_token]').val();
             var cart_product = $('.cart_product_' + id).val();
             var cart_price = $('.cart_price_' + id).val();
@@ -389,6 +342,7 @@
                 data: {
                     _token: _token,
                     cart_id: id,
+                    type: type,
                     cart_product: cart_product,
                     cart_price: cart_price,
                     cart_price_sale: cart_price_sale,

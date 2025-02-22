@@ -30,7 +30,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="bmd-label-floating">Từ khóa:</label>
+                                    <label class="bmd-label-floating">Mã Sản Phẩm:</label>
                                     <span> {{ $data->category->category_keyword}}</span>
 
                                 </div>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="bmd-label-floating">Khối Lượng:</label>
+                                    <label class="bmd-label-floating">Thương Hiệu:</label>
                                     <span> {{ $data->brand->brand_name}}</span>
 
                                 </div>

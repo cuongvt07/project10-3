@@ -41,7 +41,6 @@ class CartController extends Controller
         $dataBrand = BrandModel::all();
         $dataLogo = SlideModel::where('type', 3)->first();
         $dataLogoFooter = SlideModel::where('type', 4)->first();
-        $this->data_seo = new SeoHelper('Kính chào quý khách', 'Bàn decor, gương decor, thảm decor, ghể decor, tranh decor', 'VINANEON - Chuyên cung cấp những vật phẩm decor uy tín, chất lượng, giá rẻ', '/cart');
         $this->middleware(function ($request, $next) {
             $this->cart = Session::get('cart');
             $this->coupon = Session::get('coupon');
@@ -49,7 +48,6 @@ class CartController extends Controller
         });
         view()->share(['dataCategory' => $dataCategory,
             'dataBrand' => $dataBrand,
-            'data_seo' => $this->data_seo,
             'dataLogo' => $dataLogo,
             'dataLogoFooter' => $dataLogoFooter
         ]);
@@ -134,7 +132,6 @@ class CartController extends Controller
         $today = Carbon::today('Asia/Ho_Chi_Minh');
         $order_profit = 0;
         $user_id = Auth::id();
-        $checkAmount = false;
 
         foreach($this->cart as $product){
             $data = ProductModel::find($product['cart_id']);
@@ -252,7 +249,7 @@ class CartController extends Controller
                 $dataOrderdetail->product_id = $val['cart_id'];
                 $dataOrderdetail->order_detail_quantity = $val['cart_quantity'];
                 $dataOrderdetail->order_detail_price = $val['cart_price_sale'];
-                $dataOrderdetail->weight_product = $val['cart_weight'];
+                $dataOrderdetail->wrist_measurement = $val['wrist_measurement'];
                 $dataOrderdetail->save();
             }
 
@@ -390,7 +387,7 @@ class CartController extends Controller
                 $dataOrderdetail->product_id = $val['cart_id'];
                 $dataOrderdetail->order_detail_quantity = $val['cart_quantity'];
                 $dataOrderdetail->order_detail_price = $val['cart_price_sale'];
-                $dataOrderdetail->weight_product = $val['cart_weight'];
+                $dataOrderdetail->wrist_measurement = $val['wrist_measurement'];
 
                 $dataOrderdetail->save();
             }
@@ -422,6 +419,7 @@ class CartController extends Controller
     //Hàm thêm cart
     public function addToCart(Request $request){
         $cart_id = $request->cart_id;
+        $type = $request->type;
         $dataProduct = ProductModel::find($cart_id);
         if($this->cart){
             $checkIsset = 0;
@@ -475,7 +473,11 @@ class CartController extends Controller
         }
         Session::put('cart', $this->cart);
         Session::save();
-        return response()->json('Thêm sản phẩm giỏ hàng thành công');
+        if($type === 'add-to-cart'){
+            return response()->json('Thêm sản phẩm giỏ hàng thành công');
+        }else {
+            redirect('/checkout');
+        }
     }
 
     //Hàm xử lý tính tổng theo sản phẩmgiỏ hàng
@@ -714,28 +716,25 @@ class CartController extends Controller
         }
     }
 
-    public function getShippingPrice()
+    public function getShippingPrice(Request $request)
     {
         $shippingPrice = false;
-        $data_fee = Session::get('data');
-        $option_transfer = $this->request->selected_shipping_option;
-        $data_fee['fee']['deliver_option'] = $option_transfer;
-        $ghtkController = new GhtkController();
-        if (isset($data_fee['fee']) && $data_fee['fee'] !== null) {
-            $esimate = $ghtkController->estimateShipping($data_fee['fee']);
-            if ($esimate['success']) {
-                $shippingPrice = $esimate['fee']['fee'];
-            }else{
-                return redirect()->back()->with('msgError', $esimate['message']);
-            }
+        $option_transfer = $request->selected_shipping_option;
+        if ($option_transfer == 'standard') {
+            $shippingPrice = 25000;
+        } elseif ($option_transfer == 'express') {
+            $shippingPrice = 50000;
+        } else {
+            return redirect()->back()->with('msgError', 'Invalid shipping option selected');
         }
+
         $cart_price_ship = 0;
         $cart_total = $this->getTotal($this->cart);
         $cart_totals = $this->getTotals($cart_total);
 
-            Session::put('priceShip', $shippingPrice);
-                $cart_totals = $cart_totals + $shippingPrice;
-            Session::put('totalCart', $cart_totals);
+        Session::put('priceShip', $shippingPrice);
+        $cart_totals = $cart_totals + $shippingPrice;
+        Session::put('totalCart', $cart_totals);
 
         return $result = [$cart_price_ship, number_format($cart_totals), $shippingPrice];
     }

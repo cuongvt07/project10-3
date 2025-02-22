@@ -54,9 +54,9 @@ class CategoryController extends Controller
         $data->category_description = $request->category_description;
 
         if ($data->save()) {
-            return redirect('admin/categorys')->with('msgSuccess', 'Thêm Loại Sản Phẩm Thành Công');
+            return redirect('admin/categorys')->with('msgSuccess', 'Thêm Loại Danh Mục Thành Công');
         } else {
-            return redirect('admin/categorys/create')->with('msgError', 'Thêm Loại Sản Phẩm Thất Bại');
+            return redirect('admin/categorys/create')->with('msgError', 'Thêm Loại Danh Mục Thất Bại');
         }
 
     }
@@ -78,9 +78,9 @@ class CategoryController extends Controller
         $data->category_description = $request->category_description;
 
         if ($data->save()) {
-            return redirect()->route('category.index')->with('msgSuccess', 'Cập Nhật Loại Sản Phẩm Thành Công');
+            return redirect()->route('category.index')->with('msgSuccess', 'Cập Nhật Loại Danh Mục Thành Công');
         } else {
-            return redirect()->back()->with('msgSuccess', 'Cập Nhật Loại Sản Phẩm Thất Bại');
+            return redirect()->back()->with('msgSuccess', 'Cập Nhật Loại Danh Mục Thất Bại');
         }
     }
 
@@ -104,7 +104,7 @@ class CategoryController extends Controller
             }
         }
         if ($error && $message_error) {
-            return response()->json(['msgError' => 'Xóa Loại sản phẩm thất bại']);
+            return response()->json(['msgError' => 'Xóa Loại Danh Mục thất bại']);
 
         }
         if ($ids) {
@@ -113,7 +113,7 @@ class CategoryController extends Controller
                 ->delete();
         }
         Db::commit();
-        return response()->json(['msgSuccess' => 'Xóa Loại sản phẩm thành công']);
+        return response()->json(['msgSuccess' => 'Xóa Loại Danh Mục thành công']);
     }
 
     public function destroy($id)
@@ -121,10 +121,10 @@ class CategoryController extends Controller
         $data = CategoryModel::find($id);
 
         if($data->delete()){
-            return response()->json(['msgSuccess'=>'Xóa loại sản phẩm thành công']);
+            return response()->json(['msgSuccess'=>'Xóa loại Danh Mục thành công']);
         }
         else{
-            return response()->json(['msgError'=>'Xóa loại sản phẩm thất bại']);
+            return response()->json(['msgError'=>'Xóa loại Danh Mục thất bại']);
         }
     }
 
@@ -147,6 +147,6 @@ class CategoryController extends Controller
             "category_keyword",
             "category_description"
         ]);
-        return Excel::download(new CateExport($orderedResponses), 'Thống kê loại sản phẩm Tâm Trà-' . now()->format('Y-m-d') . '.xlsx');
+        return Excel::download(new CateExport($orderedResponses), 'Thống kê loại Danh Mục Tâm Trà-' . now()->format('Y-m-d') . '.xlsx');
     }
 }

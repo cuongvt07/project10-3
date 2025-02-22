@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Start Product Grid -->
-    <section class="htc__product__grid bg__white ptb--50">
+    <section class="htc__product__grid bg__cat--1 ptb--50">
 
         <div class="container">
             <div class="row">

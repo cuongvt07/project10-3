@@ -15,7 +15,7 @@
                                         <th class="product-thumbnail">Sản phẩm</th>
                                         <th class="product-name">Tên sản phẩm</th>
                                         <th class="product-price">Giá</th>
-                                        <th class="product-price">Khối lượng</th>
+                                        <th class="product-price">Thương Hiệu</th>
                                         <th class="product-quantity">Số lượng</th>
                                         <th class="product-subtotal">Tổng giá</th>
                                         <th class="product-remove">XoÁ</th>
@@ -31,7 +31,7 @@
                                             <td class="product-thumbnail"><a href="/shop/product/{{$item['cart_id']}}-{{Str::slug($item['cart_product'], '-')}}.html"><img style="width: 100px; height: 120px" src="{{$item['cart_image']}}" alt="product img" /></a></td>
                                             <td class="product-name"><a href="/shop/product/{{$item['cart_id']}}-{{Str::slug($item['cart_product'], '-')}}.html">{{$item['cart_product']}}</a></td>
                                             <td class="product-price"><span class="amount">{{number_format($item['cart_price_sale'])}}</span></td>
-                                            <td class="product-price"><span class="product-brand">{{ $weight }} kg</span></td>
+                                            <td class="product-price"><span class="product-brand">{{ $weight }}</span></td>
                                             <form>
                                                 @csrf
                                             <td class="product-quantity"><input class="get_qty" name="qty_{{$item['cart_id']}}" data-id="{{$item['cart_id']}}" type="number" value="{{$item['cart_quantity']}}" /></td>

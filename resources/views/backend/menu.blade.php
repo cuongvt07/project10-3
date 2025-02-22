@@ -1,6 +1,6 @@
 <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
     <div class="logo"><a href="/" class="simple-text logo-normal">
-        TEA TAM
+        ROLEX SHOP
       </a></div>
     <div class="sidebar-wrapper">
       <ul class="nav">
@@ -19,7 +19,7 @@
           @endphp">
           <a class="nav-link" href="admin/categorys">
               <i class="fa-solid fa-bars"></i>
-              <p>Loại Sản Phẩm</p>
+              <p>Danh Mục</p>
           </a>
         </li>
         <li class="nav-item @php
@@ -28,7 +28,7 @@
           @endphp">
           <a class="nav-link" href="admin/brands">
               <i class="fa-solid fa-certificate"></i>
-              <p>Phân Loại Khối Lượng</p>
+              <p>Thương Hiệu</p>
           </a>
         </li>
         <li class="nav-item @php
@@ -66,25 +66,6 @@
             <p>Hóa Đơn</p>
           </a>
         </li>
-
-          <li class="nav-item @php
-              if(isset($activeChat))
-              echo $activeChat;
-          @endphp">
-              <a class="nav-link" href="/chat">
-                  <i class="fa-brands fa-facebook-messenger"></i>
-                  <p>Tin nhắn</p>
-              </a>
-          </li>
-          <li class="nav-item @php
-              if(isset($activeShip))
-              echo $activeShip;
-          @endphp">
-              <a class="nav-link" href="admin/ships">
-                  <i class="fa-solid fa-truck-fast"></i>
-                  <p>Phí Vận Chuyển</p>
-              </a>
-          </li>
           <li class="nav-item @php
               if(isset($activeCoupon))
               echo $activeCoupon;

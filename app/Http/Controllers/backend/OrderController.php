@@ -87,13 +87,13 @@ class OrderController extends Controller
         try {
             $products = [];
             $carts = OrderdetailModel::select(
-                'order_detail_id', 'order_id', 'product_id', 'weight_product', 'order_detail_quantity')
+                'order_detail_id', 'order_id', 'product_id', 'wrist_measurement', 'order_detail_quantity')
                 ->where('order_id', $param)->get();
             if ($carts && count($carts) > 0) {
                 foreach ($carts as $key => $cartItem) {
                     $product = [
                         "name" => $cartItem->product->product_name,
-                        "weight" => number_format(CommonHelper::get_data_weight($cartItem->weight_product), 1),
+                        "weight" => number_format(CommonHelper::get_data_weight($cartItem->wrist_measurement), 1),
                         "quantity" => $cartItem->order_detail_quantity,
                         "product_code" => "2023tamtra" .$cartItem->product_id
                     ];

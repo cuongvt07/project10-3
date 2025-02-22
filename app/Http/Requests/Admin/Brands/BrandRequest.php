@@ -33,10 +33,10 @@ class BrandRequest extends FormRequest
     public function messages()
     {
         return [
-            'brand_name.required' => 'Tên khối lượng không được để trống',
-            'brand_name.max' => 'Tên khối lượng không được không được dài hơn 50 kí tự',
-            'brand_keyword.required' => 'Từ khóa khối lượng không được để trống',
-            'brand_description.required' => 'Mô tả khối lượng không được để trống',
+            'brand_name.required' => 'Tên thương hiệu không được để trống',
+            'brand_name.max' => 'Tên thương hiệu không được không được dài hơn 50 kí tự',
+            'brand_keyword.required' => 'Từ khóa thương hiệu không được để trống',
+            'brand_description.required' => 'Mô tả thương hiệu không được để trống',
         ];
     }
 }
