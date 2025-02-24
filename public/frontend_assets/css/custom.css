@@ -42,14 +42,15 @@
 
 .sale-span{
   position: absolute;
-  width: 70px;
+  width: 60px;
   height: 30px;
   top: 10px;
-  background-color: #fffe00;
-  color: #ff0000;
+  background-color: #ffadaa;
+  color: #ff1f00;
   text-align: center;
   line-height: 30px;
   font-weight: bold;
+  border-radius: 0 15px 15px;
 }
 
 .pagination .active{

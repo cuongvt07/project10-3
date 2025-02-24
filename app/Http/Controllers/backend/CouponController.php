@@ -56,11 +56,11 @@ class CouponController extends Controller
     public function update(CouponRequest $request, $id){
         $data = CouponModel::find($id);
 
-        $data->coupon_name = $request->coupon_name;
-        $data->coupon_code = $request->coupon_code;
-        $data->coupon_value = $request->coupon_value;
-        $data->coupon_status = $request->coupon_status;
-        $data->coupon_expiry = $request->coupon_expiry;
+        $data->coupon_name = $request->coupon_name ?? $data->coupon_name;
+        $data->coupon_code = $request->coupon_code ?? $data->coupon_code;
+        $data->coupon_value = $request->coupon_value ?? $data->coupon_value;
+        $data->coupon_status = $request->coupon_status ?? $data->coupon_status;
+        $data->coupon_expiry = $request->coupon_expiry ?? $data->coupon_expiry;
 
         if($data->save()){
             return redirect()->back()->with('msgSuccess', 'Sửa Mã Giảm Giá Thành Công');

@@ -16,113 +16,113 @@
                             <div class="accordion__body">
                                 <div class="bilinfo">
                                     <div class="row">
-                                    <form id="paymentForm" action="/payment" method="POST">
-                                        @csrf
-                                        <div class="col-md-12">
-                                            <div class="single-input">
-                                                <select name="city_id" id="city_id">
-                                                    <option>Tỉnh/Thành Phố</option>
-                                                    @foreach ($dataCity as $item)
+                                        <form id="paymentForm" action="/payment" method="POST">
+                                            @csrf
+                                            <div class="col-md-12">
+                                                <div class="single-input">
+                                                    <select name="city_id" id="city_id">
+                                                        <option>Tỉnh/Thành Phố</option>
+                                                        @foreach ($dataCity as $item)
                                                         <option value="{{$item->city_id}}"
-                                                        @if ($item->city_id == $dataUser->user_city)
+                                                            @if ($item->city_id == $dataUser->user_city)
                                                             selected
+                                                            @endif
+                                                            >{{$item->city_name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <input type="hidden" name="city_id" id="hidden_city_id" value="{{$dataUser->user_city}}">
+                                                    @error('city_id')
+                                                    <span class="text-danger">{{$message}}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="single-input">
+                                                    <select name="district_id" id="district_id">
+                                                        <option>Quận Huyện</option>
+                                                        @if ($dataUser->user_district != null)
+                                                        <option value="{{$dataUser->user_district}}" selected>{{$dataUser->District->district_name}}</option>
                                                         @endif
-                                                        >{{$item->city_name}}</option>
-                                                    @endforeach
-                                                </select>
-                                                <input type="hidden" name="city_id" id="hidden_city_id" value="{{$dataUser->user_city}}">
-                                                @error('city_id')
-                                                <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="single-input">
-                                                <select name="district_id" id="district_id">
-                                                    <option>Quận Huyện</option>
-                                                    @if ($dataUser->user_district != null)
-                                                    <option value="{{$dataUser->user_district}}" selected>{{$dataUser->District->district_name}}</option>
-                                                    @endif
-                                                </select>
-                                                <input type="hidden" name="district_id" id="hidden_district_id" value="{{$dataUser->user_district}}">
-                                                @error('district_id')
-                                                <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="single-input">
-                                                <input type="text" name="order_name" value="{{$dataUser->user_name}}" placeholder="Họ Tên">
-                                                @error('order_name')
-                                                <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="single-input">
-                                                <input type="email" name="order_email" value="{{$dataUser->user_email}}" placeholder="Email">
-                                                @error('order_email')
-                                                <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="single-input">
-                                                <input type="text" name="order_phone" value="{{$dataUser->user_phone}}" placeholder="Số điện thoại">
-                                                @error('order_phone')
-                                                <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="single-input">
-                                                <input type="text" name="order_address" value="{{$dataUser->user_address}}" placeholder="Địa chỉ chi tiết">
-                                                @error('order_address')
-                                                <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="single-input">
-                                                <input type="text" name="order_note" placeholder="Lời nhắn">
-                                            </div>
-                                        </div>
-
-                                        <!-- Payment Options -->
-                                        <div class="row text-center">
-                                            <div class="col-md-9" style="margin-top: 5px">
-                                                <div class="col-3 col-sm-3 text-center">
-                                                    <label for="paymentCash" class="payment-option" onclick="selectPaymentOption(event)">
-                                                        <div class="image-container">
-                                                            <img src="https://nascoexpress.com/getattachment/b8a25cce-6779-4eda-9409-f7912ee05660/dich-vu-cod-tai-nasco-express-(1).jpg.html" alt="Cash Payment" class="img-fluid">
-                                                        </div>
-                                                        Thanh toán khi nhận hàng
-                                                    </label>
-                                                    <input class="type_payment" type="radio" id="paymentCash" name="order_pay_type" value="1">
-                                                </div>
-                                                <div class="col-3 col-sm-3">
-                                                    <label for="paymentVNPAY" class="payment-option" onclick="selectPaymentOption(event)">
-                                                        <div class="image-container">
-                                                            <img src="https://play-lh.googleusercontent.com/o-_z132f10zwrco4NXk4sFqmGylqXBjfcwR8-wK0lO1Wk4gzRXi4IZJdhwVlEAtpyQ=w240-h480-rw" alt="VNPay" class="img-fluid">
-                                                        </div>
-                                                        Thanh toán qua VNPay
-                                                    </label>
-                                                    <input class="type_payment" type="radio" id="paymentVNPAY" name="order_pay_type" value="2">
-                                                </div>
-                                                <div class="col-3 col-sm-3">
-                                                    <label for="paymentMomo" class="payment-option" onclick="selectPaymentOption(event)">
-                                                        <div class="image-container">
-                                                            <img src="https://play-lh.googleusercontent.com/dQbjuW6Jrwzavx7UCwvGzA_sleZe3-Km1KISpMLGVf1Be5N6hN6-tdKxE5RDQvOiGRg=w240-h480-rw" alt="MoMo" class="img-fluid">
-                                                        </div>
-                                                        Thanh toán qua MoMo
-                                                    </label>
-                                                    <input class="type_payment" type="radio" id="paymentMomo" name="order_pay_type" value="3">
+                                                    </select>
+                                                    <input type="hidden" name="district_id" id="hidden_district_id" value="{{$dataUser->user_district}}">
+                                                    @error('district_id')
+                                                    <span class="text-danger">{{$message}}</span>
+                                                    @enderror
                                                 </div>
                                             </div>
-                                        </div>
-                                    </form>
+
+                                            <div class="col-md-12">
+                                                <div class="single-input">
+                                                    <input type="text" name="order_name" value="{{$dataUser->user_name}}" placeholder="Họ Tên">
+                                                    @error('order_name')
+                                                    <span class="text-danger">{{$message}}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-input">
+                                                    <input type="email" name="order_email" value="{{$dataUser->user_email}}" placeholder="Email">
+                                                    @error('order_email')
+                                                    <span class="text-danger">{{$message}}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-input">
+                                                    <input type="text" name="order_phone" value="{{$dataUser->user_phone}}" placeholder="Số điện thoại">
+                                                    @error('order_phone')
+                                                    <span class="text-danger">{{$message}}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="single-input">
+                                                    <input type="text" name="order_address" value="{{$dataUser->user_address}}" placeholder="Địa chỉ chi tiết">
+                                                    @error('order_address')
+                                                    <span class="text-danger">{{$message}}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="single-input">
+                                                    <input type="text" name="order_note" placeholder="Lời nhắn">
+                                                </div>
+                                            </div>
+
+                                            <!-- Payment Options -->
+                                            <div class="row text-center">
+                                                <div class="col-md-9" style="margin-top: 5px">
+                                                    <div class="col-3 col-sm-3 text-center">
+                                                        <label for="paymentCash" class="payment-option" onclick="selectPaymentOption(event)">
+                                                            <div class="image-container">
+                                                                <img src="https://nascoexpress.com/getattachment/b8a25cce-6779-4eda-9409-f7912ee05660/dich-vu-cod-tai-nasco-express-(1).jpg.html" alt="Cash Payment" class="img-fluid">
+                                                            </div>
+                                                            Thanh toán khi nhận hàng
+                                                        </label>
+                                                        <input class="type_payment" type="radio" id="paymentCash" name="order_pay_type" value="1" required>
+                                                    </div>
+                                                    <div class="col-3 col-sm-3">
+                                                        <label for="paymentVNPAY" class="payment-option" onclick="selectPaymentOption(event)">
+                                                            <div class="image-container">
+                                                                <img src="https://play-lh.googleusercontent.com/o-_z132f10zwrco4NXk4sFqmGylqXBjfcwR8-wK0lO1Wk4gzRXi4IZJdhwVlEAtpyQ=w240-h480-rw" alt="VNPay" class="img-fluid">
+                                                            </div>
+                                                            Thanh toán qua VNPay
+                                                        </label>
+                                                        <input class="type_payment" type="radio" id="paymentVNPAY" name="order_pay_type" value="2" required>
+                                                    </div>
+                                                    <div class="col-3 col-sm-3">
+                                                        <label for="paymentMomo" class="payment-option" onclick="selectPaymentOption(event)">
+                                                            <div class="image-container">
+                                                                <img src="https://play-lh.googleusercontent.com/dQbjuW6Jrwzavx7UCwvGzA_sleZe3-Km1KISpMLGVf1Be5N6hN6-tdKxE5RDQvOiGRg=w240-h480-rw" alt="MoMo" class="img-fluid">
+                                                            </div>
+                                                            Thanh toán qua MoMo
+                                                        </label>
+                                                        <input class="type_payment" type="radio" id="paymentMomo" name="order_pay_type" value="3" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
 
                                     </div>
                                 </div>
@@ -175,11 +175,25 @@
 
                         <div class="order-details__count__single">
                             <h5>Mã giảm giá</h5>
-                            <span class="price" id="coupon_cart">{{$coupon_cart}}</span>
+                            <span class="price" id="coupon_cart">{{ $coupon_cart }}</span>
+                            <button id="delete_coupon_cart" type="button" class="btn-sm" style="display: {{ $coupon_cart ? 'inline-block' : 'none' }};">X</button>
                         </div>
+
+
                         <div class="order-details__count__single">
                             <h5>Phí Vận Chuyển</h5>
-                            <span class="price" id="shipping"></span>
+                            <span class="price" id="shipping">25000</span>
+                        </div>
+                        <div class="order-details__count__single">
+                            <h5>Chọn loại vận chuyển</h5>
+                            <div>
+                                <label>
+                                    <input type="radio" name="shipping_option" value="standard" checked> Thường
+                                </label>
+                                <label>
+                                    <input type="radio" name="shipping_option" value="express"> Hỏa tốc
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="ordre-details__total">
@@ -287,8 +301,8 @@
 </script>
 
 <script>
-    $(document).ready(function() {
-        $("#payment_btn").on("click", function(event) {
+    $(document).ready(function () {
+        $("#payment_btn").on("click", function (event) {
             event.preventDefault();
             $("#paymentForm").submit();
         });
@@ -296,35 +310,58 @@
 </script>
 
 <script>
-    $('select.selectpicker').change(function() {
-        var paymentType = $('input[name="order_pay_type"]:checked').val();
-        var selectedShippingOption = $(this).val();
-        sendShippingFeeRequest(paymentType, selectedShippingOption);
-    });
-
-    function sendShippingFeeRequest(paymentType, selectedShippingOption) {
-        var _token = $('input[name="_token"]').val();
+    $('#check_coupon_cart').click(function () {
+        var _token = $('input[name=_token]').val();
+        var couponCode = $('input[name=coupon_code]').val();
         $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: '{{ route('ghtk.getShippingPrice') }}',
-            type: 'POST',
+            url: 'add_coupon_cart',
+            method: 'POST',
             data: {
                 _token: _token,
-                payment_type: paymentType,
-                selected_shipping_option: selectedShippingOption
+                coupon_code: couponCode,
             },
-            success: function(data) {
-                $('#shipping').text(data[2].toLocaleString('ja-JP') + '' + ' đ')
-                $('#cart_totals').text(data[1].toLocaleString('ja-JP') + '' + ' đ')
-            },
-            error: function(xhr, status, error) {
-                // Xử lý lỗi ở đây
-                console.error(error);
+            success: function (data) {
+                console.log(data);
+                if (data.status) {
+                    $('#cart_coupon_message').text(data.message);
+                    $('#cart_coupon').html(data.coupon_show);
+                    $('#coupon_cart').text(data.coupon_show);
+                    $('#cart_totals').text(Number(data.cart_totals).toLocaleString('ja-JP') + ' VNĐ');
+                    // Hiển thị nút X nếu coupon được áp dụng thành công
+                    $('#delete_coupon_cart').show();
+                } else {
+                    $('#cart_coupon_message').text(data.message);
+                    // Ẩn nút X nếu coupon không được áp dụng
+                    $('#delete_coupon_cart').hide();
+                }
             }
         });
-    }
+    });
+
+
+
+    $("#delete_coupon_cart").click(function () {
+        var _token = $('input[name=_token]').val();
+        $.ajax({
+            url: 'delete_coupon_cart',
+            method: 'POST',
+            data: {
+                _token: _token,
+            },
+            success: function (data) {
+                if (data.status) {
+                    $('#cart_coupon_message').text(data.message);
+                    $('#cart_coupon').html(data.coupon_show);
+                    $('#cart_totals').text(Number(data.cart_totals).toLocaleString('ja-JP') + ' VNĐ');
+                    $('#coupon_cart').text('');
+                    // Ẩn nút thay vì xóa
+                    $('#delete_coupon_cart').hide();
+                } else {
+                    $('#cart_coupon_message').text(data.message);
+                }
+            }
+        });
+    });
 </script>
 <script>
     document.querySelectorAll('.type_payment').forEach(input => {
@@ -343,5 +380,36 @@
             }
         });
     });
+
+    $(document).ready(function(){
+        $('input[name="shipping_option"]').on('change', function(){
+            var selectedOption = $(this).val();
+            var shippingFee = (selectedOption === 'express') ? 50000 : 25000;
+            
+            $('#shipping').text(shippingFee);
+            
+            var _token = $('input[name="_token"]').val();
+            
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('ghtk.getShippingPrice') }}',
+                type: 'POST',
+                data: {
+                    _token: _token,
+                    selected_shipping_option: selectedOption,
+                },
+                success: function(data) {
+                    console.log(data);
+                    $('#cart_totals').text(data[1].toLocaleString('ja-JP') + '' + ' đ')
+                },
+                error: function(xhr, status, error) {
+                    console.error("Lỗi cập nhật phí vận chuyển:", error);
+                }
+            });
+        });
+    }); 
+
 </script>
 @endsection

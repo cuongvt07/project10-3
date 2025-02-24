@@ -300,6 +300,42 @@
 /*-----------------------------------------------
     15. Brand Area
 -------------------------------------------------*/
+    $('.product-review-slider').owlCarousel({
+        loop: true,
+        margin: 10,
+        autoplay: true,
+        margin: 15,
+        autoplayTimeout: 3000,
+        responsive: {
+            0: {
+                items: 1  // Mobile: hiển thị 1 slide
+            },
+            768: {
+                items: 3  // PC: hiển thị 3 slide
+            }
+        }
+    });
+
+    $('.product__list').owlCarousel({
+        loop: true,
+        margin: 15,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        autoHeight: true,
+        responsive: {
+            0: {
+                items: 2
+            },
+            768: {
+                items: 5
+            }
+        },
+        nav: true,
+        navText: [
+            '<',
+            '>'
+        ]
+    });    
 
     $('.brand__list').owlCarousel({
       loop: true,

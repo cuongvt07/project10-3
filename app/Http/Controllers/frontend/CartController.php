@@ -44,6 +44,11 @@ class CartController extends Controller
         $this->middleware(function ($request, $next) {
             $this->cart = Session::get('cart');
             $this->coupon = Session::get('coupon');
+            Session::put('priceShip', 25000);
+            $cart_total = $this->getTotal($this->cart);
+            $cart_totals = $this->getTotals($cart_total);
+            Session::put('totalCart', $cart_totals);
+            Session::save();
             return $next($request);
         });
         view()->share(['dataCategory' => $dataCategory,
@@ -132,6 +137,9 @@ class CartController extends Controller
         $today = Carbon::today('Asia/Ho_Chi_Minh');
         $order_profit = 0;
         $user_id = Auth::id();
+    
+
+        dd($this->cart);
 
         foreach($this->cart as $product){
             $data = ProductModel::find($product['cart_id']);
@@ -506,6 +514,9 @@ class CartController extends Controller
         else{
             $cart_totals = $cart_total;
         }
+        $feeShip = Session::get('priceShip');
+        $cart_totals = $cart_totals + $feeShip;
+        Session::put('totalCart', $cart_totals);
 
         return $cart_totals;
     }
@@ -554,64 +565,98 @@ class CartController extends Controller
     }
 
     //Hàm xử lý thêm mã giảm giá và check mã giảm giá
-    public function addCouponCart(Request $request){
+    public function addCouponCart(Request $request) {
         $data = CouponModel::where('coupon_code', $request->coupon_code)->first();
-        $checkUse = CouponModel::where('coupon_code', $request->coupon_code)->where('user_id', 'LIKE', '%'.Auth::id().'%')->first();
+        $checkUse = CouponModel::where('coupon_code', $request->coupon_code)
+                    ->where('user_id', 'LIKE', '%' . Auth::id() . '%')
+                    ->first();
         $today = Carbon::today('Asia/Ho_Chi_Minh');
-
+    
         $cart_total = $this->getTotal($this->cart);
 
-        $result = [];
-
-        if($data){
-            if($data->coupon_status != 3){
-                if(!$checkUse){
-                    if($today < $data->coupon_expiry){
-                        if($data->coupon_status == 1){
+        $result = [
+            'status' => false,
+            'message' => '',
+            'coupon_value' => 0,
+            'cart_totals' => $cart_total,
+            'coupon_show' => 0
+        ];
+    
+        if ($data) {
+            if ($data->coupon_status != 3) {
+                if (!$checkUse) {
+                    if ($today < $data->coupon_expiry) {
+                        if ($data->coupon_status == 1) {
                             $coupon_value = [
                                 'coupon_status' => $data->coupon_status,
-                                'coupon_value' => $data->coupon_value,
-                                'coupon_id' => $data->coupon_id,
-                                'coupon_show' => $data->coupon_value . ' %',
+                                'coupon_value'  => $data->coupon_value,
+                                'coupon_id'     => $data->coupon_id,
+                                'coupon_show'   => $data->coupon_value . ' %',
                             ];
-                            Session::put('coupon', $coupon_value);
-                        }
-                        else{
+                        } else {
                             $coupon_value = [
                                 'coupon_status' => $data->coupon_status,
-                                'coupon_value' => $data->coupon_value,
-                                'coupon_id' => $data->coupon_id,
-                                'coupon_show' => number_format($data->coupon_value) . ' VNĐ',
+                                'coupon_value'  => $data->coupon_value,
+                                'coupon_id'     => $data->coupon_id,
+                                'coupon_show'   => number_format($data->coupon_value) . ' VNĐ',
                             ];
-                            Session::put('coupon', $coupon_value);
                         }
-                        //Tính lại tổng khi add mã
+                        Session::put('coupon', $coupon_value);
+                        Session::save();
+                        $this->coupon = Session::get('coupon');
                         $cart_totals = $this->getTotals($cart_total);
-
-                        $result = ['Bạn đã áp dụng thành công mã '. $data->coupon_name, $data->coupon_value, $cart_totals, Session::get('coupon')['coupon_show']];
-                    }
-                    else{
+                        
+                        
+                        $result = [
+                            'status' => true,
+                            'message' => 'Bạn đã áp dụng thành công mã ' . $data->coupon_name,
+                            'coupon_value' => $data->coupon_value,
+                            'cart_totals' => $cart_totals,
+                            'coupon_show' => Session::get('coupon')['coupon_show']
+                        ];
+                    } else {
                         Session::forget('coupon');
-                        $result = ['Mã giảm giá đã hết hạn', 0, $cart_total, 0];
+                        $result = [
+                            'status' => false,
+                            'message' => 'Mã giảm giá đã hết hạn',
+                            'coupon_value' => 0,
+                            'cart_totals' => $cart_total,
+                            'coupon_show' => 0
+                        ];
                     }
-                }
-                else{
+                } else {
                     Session::forget('coupon');
-                    $result = ['Bạn đã dùng mã giảm giá này rồi', 0, $cart_total, 0];
+                    $result = [
+                        'status' => false,
+                        'message' => 'Bạn đã dùng mã giảm giá này rồi',
+                        'coupon_value' => 0,
+                        'cart_totals' => $cart_total,
+                        'coupon_show' => 0
+                    ];
                 }
-            }
-            else{
+            } else {
                 Session::forget('coupon');
-                $result = ['Mã giảm giá đã hết', 0, $cart_total, 0];
+                $result = [
+                    'status' => false,
+                    'message' => 'Mã giảm giá đã hết',
+                    'coupon_value' => 0,
+                    'cart_totals' => $cart_total,
+                    'coupon_show' => 0
+                ];
             }
-        }
-        else{
+        } else {
             Session::forget('coupon');
-            $result = ['Mã giảm giá không tồn tại', 0, $cart_total, 0];
+            $result = [
+                'status' => false,
+                'message' => 'Mã giảm giá không tồn tại',
+                'coupon_value' => 0,
+                'cart_totals' => $cart_total,
+                'coupon_show' => 0
+            ];
         }
-
+    
         return $result;
-    }
+    }    
 
     //Hàm get sản phẩm trong cart offset ajax
     public function getDataCart(){
@@ -645,23 +690,6 @@ class CartController extends Controller
 
         return $data;
     }
-
-    //Hàm xử lý phí vận chuyển
-    public function getShipCheckout(Request $request){
-        $cart_price_ship = 0;
-
-        $cart_total = $this->getTotal($this->cart);
-
-        $cart_totals = $this->getTotals($cart_total);
-
-            $cart_price_ship = 10000;
-            Session::put('priceShip', $cart_price_ship);
-            $cart_totals = $cart_totals + 10000;
-            Session::put('totalCart', $cart_totals);
-
-        return $result = [$cart_price_ship, $cart_totals];
-    }
-
 
     public function getInformatioOrder(): array
     {
@@ -727,16 +755,44 @@ class CartController extends Controller
         } else {
             return redirect()->back()->with('msgError', 'Invalid shipping option selected');
         }
-
-        $cart_price_ship = 0;
-        $cart_total = $this->getTotal($this->cart);
-        $cart_totals = $this->getTotals($cart_total);
-
+    
         Session::put('priceShip', $shippingPrice);
-        $cart_totals = $cart_totals + $shippingPrice;
-        Session::put('totalCart', $cart_totals);
+    
+        $cart_total = $this->getTotal($this->cart);
+    
+        $subTotal = $cart_total + $shippingPrice;
+        if (Session::has('coupon')) {
+            $coupon = Session::get('coupon');
+            if ($coupon['coupon_status'] == 1) { // Giảm theo phần trăm
+                $discount = $cart_total * ($coupon['coupon_value'] / 100);
+                $finalTotal = $subTotal - $discount;
+            } elseif ($coupon['coupon_status'] == 2) { // Giảm theo tiền cố định
+                $finalTotal = $cart_total - $coupon['coupon_value'] + $shippingPrice;
+            } else {
+                $finalTotal = $subTotal;
+            }
+        } else {
+            $finalTotal = $subTotal;
+        }
+    
+        Session::put('totalCart', $finalTotal);
+        Session::save();
 
-        return $result = [$cart_price_ship, number_format($cart_totals), $shippingPrice];
+        return [$cart_total, number_format($finalTotal), $shippingPrice];
     }
 
+    public function deleteCouponCart(Request $request)
+    {
+        Session::forget('coupon');
+
+        $cart_total = $this->getTotal($this->cart);
+        $cart_totals = $cart_total; 
+
+        return response()->json([
+            'status'      => true,
+            'message'     => 'Coupon đã được xóa thành công',
+            'cart_totals' => $cart_totals,
+            'coupon_show' => 0
+        ]);
+    }
 }

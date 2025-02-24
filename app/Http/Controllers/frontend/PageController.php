@@ -35,6 +35,7 @@ class PageController extends Controller
                 ->join('orderdetail', 'orders.order_id', '=', 'orderdetail.order_id')
                 ->count('orderdetail.order_detail_id');
         $dataLogo = SlideModel::where('type', 3)->first();
+        $dataLogoFooter = SlideModel::where('type', 4)->first();
 
         view()->share([
             'dataCategory' => $dataCategory,
@@ -47,6 +48,7 @@ class PageController extends Controller
             'priceMaxFilter' => $priceMax-2000000,
             'countCart' => $countCart ?? 0,
             'dataLogo' => $dataLogo,
+            'dataLogoFooter' => $dataLogoFooter,
         ]);
     }
 

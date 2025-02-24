@@ -12,7 +12,7 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="../libs/vinaneon-logo-1.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/kTcB+K0G3Lqf0ZCwY1gK1dR1U1VnKhT2oVhCF0wYlSZeJkN+U5U3dQe1J6/0N9l1f6Z7m6ITX6uHg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <base href="/">
     <!-- All css files are included here. -->
@@ -74,7 +74,8 @@
                                 <div class="ft__details">
                                     <div class="row">
                                         <div class="col-sm-9">
-                                            <p>
+                                            <img src="{{$dataLogoFooter->image}}" alt="">
+                                            <p style="margin-top: 10px;">
                                             Rolex Shop là đại lý bán lẻ đồng hồ chính hãng, cam kết mang đến cho khách hàng trải nghiệm mua sắm dễ dàng, thuận tiện và an toàn trên nhiều nền tảng khác nhau. Chúng tôi cung cấp các sản phẩm từ các thương hiệu đồng hồ uy tín, đảm bảo chất lượng và bảo hành chính hãng.</p>
                                         </div>
                                     </div>
@@ -109,7 +110,7 @@
                         <!-- Start Single Footer Widget -->
                         <div class="col-md-3 col-sm-6 col-xs-12 xmt-40">
                             <div class="footer">
-                                <h2 class="title__line--2">kHÔNG GIAN</h2>
+                                <h2 class="title__line--2">Thương Hiệu</h2>
                                 <div class="ft__inner">
                                     <ul class="ft__list">
                                         @foreach ($dataBrand as $item)
@@ -123,7 +124,7 @@
                         <!-- Start Single Footer Widget -->
                         <div class="col-md-3 col-sm-6 col-xs-12 xmt-40">
                             <div class="footer">
-                                <h2 class="title__line--2">Danh Mục</h2>
+                                <h2 class="title__line--2">Phân Loại</h2>
                                 <div class="ft__inner">
                                     <ul class="ft__list">
                                         @foreach ($dataCategory as $item)

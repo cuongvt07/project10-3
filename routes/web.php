@@ -54,11 +54,10 @@ Route::post('/add_to_cart', [CartController::class, 'addToCart']);
 Route::post('/update_quantity_cart', [CartController::class, 'updateQuatityCart']);
 Route::post('/delete_product_cart', [CartController::class, 'deleteProductCart']);
 Route::post('/add_coupon_cart', [CartController::class, 'addCouponCart']);
+Route::post('/delete_coupon_cart', [CartController::class, 'deleteCouponCart']);
 Route::get('/get_data_cart', [CartController::class, 'getDataCart']);
 Route::post('/delete_cart_offset', [CartController::class, 'deteleProductCartOffset']);
 Route::post('/get_district_checkout', [CartController::class, 'getDistricCheckout']);
-Route::post('/get_ship_checkout', [CartController::class, 'getShipCheckout']);
-
 //Login Google
 Route::get('/auth/redirect/{provider}', [SocialController::class, 'redirect']);
 Route::get('/callback/{provider}', [SocialController::class, 'callback']);

@@ -25,7 +25,7 @@ class CouponRequest extends FormRequest
     {
         return [
             'coupon_name' => 'required|min:10|max:50',
-            'coupon_code' => 'required|min:5|max:30|unique:coupons,coupon_code',
+            'coupon_code' => 'required|min:5|max:30',
             'coupon_value' => 'required',
             'coupon_status' => 'required',
             'coupon_expiry' => 'required',
@@ -41,7 +41,6 @@ class CouponRequest extends FormRequest
             'coupon_code.required' => 'Mã giảm giá không được để trống',
             'coupon_code.min' => 'Mã giảm giá không được để ngắn hơn 5 kí tự và dài hơn 30 kí tự',
             'coupon_code.max' => 'Mã giảm giá không được để ngắn hơn 5 kí tự và dài hơn 30 kí tự',
-            'coupon_code.unique' => 'Mã giảm giá này đã được tạo',
             'coupon_value.required' => 'Giá trị mã giảm giá không được để trống',
             'coupon_status.required' => 'Loại mã giảm giá không được để trống',
             'coupon_expiry.required' => 'Hạn sử dụng mã giảm giá không được để trống',

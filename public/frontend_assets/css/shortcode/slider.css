@@ -34,7 +34,7 @@
 .slider__fixed--height {
     align-items: center;
     display: flex;
-    height: 500px;
+    height: 800px;
     background: #ffbf5fbf;
 }
 .slider--one .slide {
@@ -75,8 +75,24 @@
     background: #41d86e none repeat scroll 0 0;
     color: #fff;
 }
+.single__slide.slider__fixed--height {
+  width: 100%;
+  height: 500px; /* Bạn có thể điều chỉnh chiều cao mong muốn */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Container chứa ảnh */
 .slide__thumb {
-    text-align: right;
+  width: 100%;
+  height: 100%;
+}
+
+/* Ảnh được căn chỉnh để bao phủ toàn bộ container mà vẫn giữ tỉ lệ */
+.slide__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Hoặc dùng contain nếu muốn hiển thị toàn bộ ảnh có thể có khoảng trắng */
 }
 
 
