@@ -43,12 +43,18 @@ class CartController extends Controller
         $dataLogoFooter = SlideModel::where('type', 4)->first();
         $this->middleware(function ($request, $next) {
             $this->cart = Session::get('cart');
-            $this->coupon = Session::get('coupon');
-            Session::put('priceShip', 25000);
-            $cart_total = $this->getTotal($this->cart);
-            $cart_totals = $this->getTotals($cart_total);
-            Session::put('totalCart', $cart_totals);
+            if ($this->cart) {
+                Session::put('priceShip', 25000);
+                $cart_total = $this->getTotal($this->cart);
+                $cart_totals = $this->getTotals($cart_total);
+                Session::put('totalCart', $cart_totals);
+            } else {
+                Session::forget('totalCart');
+            }
             Session::save();
+            $this->coupon = Session::get('coupon');
+            $this->totalCart = Session::get('totalCart');
+            
             return $next($request);
         });
         view()->share(['dataCategory' => $dataCategory,
@@ -120,7 +126,7 @@ class CartController extends Controller
 
         $cart_total = $this->getTotal($this->cart);
 
-        $cart_totals = $this->getTotals($cart_total);
+        $cart_totals = Session::get('totalCart');
 
         return view('frontend.pages.checkout', [
             'dataCity' => $dataCity,
@@ -137,9 +143,6 @@ class CartController extends Controller
         $today = Carbon::today('Asia/Ho_Chi_Minh');
         $order_profit = 0;
         $user_id = Auth::id();
-    
-
-        dd($this->cart);
 
         foreach($this->cart as $product){
             $data = ProductModel::find($product['cart_id']);
@@ -507,16 +510,15 @@ class CartController extends Controller
             }
             else if($this->coupon['coupon_status'] == 2){
                 // $coupon_cart = $coupon['coupon_value'] . ' VNĐ';
-
                 $cart_totals = $cart_total - $this->coupon['coupon_value'];
             }
         }
         else{
             $cart_totals = $cart_total;
         }
-        $feeShip = Session::get('priceShip');
-        $cart_totals = $cart_totals + $feeShip;
+        $cart_totals += Session::get('priceShip');
         Session::put('totalCart', $cart_totals);
+        Session::save();
 
         return $cart_totals;
     }
@@ -572,7 +574,7 @@ class CartController extends Controller
                     ->first();
         $today = Carbon::today('Asia/Ho_Chi_Minh');
     
-        $cart_total = $this->getTotal($this->cart);
+        $cart_total = $this->totalCart;
 
         $result = [
             'status' => false,
@@ -603,7 +605,6 @@ class CartController extends Controller
                         }
                         Session::put('coupon', $coupon_value);
                         Session::save();
-                        $this->coupon = Session::get('coupon');
                         $cart_totals = $this->getTotals($cart_total);
                         
                         
@@ -748,6 +749,7 @@ class CartController extends Controller
     {
         $shippingPrice = false;
         $option_transfer = $request->selected_shipping_option;
+    
         if ($option_transfer == 'standard') {
             $shippingPrice = 25000;
         } elseif ($option_transfer == 'express') {
@@ -757,10 +759,9 @@ class CartController extends Controller
         }
     
         Session::put('priceShip', $shippingPrice);
-    
         $cart_total = $this->getTotal($this->cart);
-    
         $subTotal = $cart_total + $shippingPrice;
+    
         if (Session::has('coupon')) {
             $coupon = Session::get('coupon');
             if ($coupon['coupon_status'] == 1) { // Giảm theo phần trăm
@@ -776,23 +777,24 @@ class CartController extends Controller
         }
     
         Session::put('totalCart', $finalTotal);
-        Session::save();
-
+        Session::save(); // Bảo đảm session được lưu
+    
         return [$cart_total, number_format($finalTotal), $shippingPrice];
     }
 
     public function deleteCouponCart(Request $request)
     {
         Session::forget('coupon');
-
-        $cart_total = $this->getTotal($this->cart);
-        $cart_totals = $cart_total; 
-
+    
+        $shippingPrice = $this->coupon;
+        $cartTotal = $this->totalCart + $shippingPrice['coupon_value'];
+    
         return response()->json([
             'status'      => true,
             'message'     => 'Coupon đã được xóa thành công',
-            'cart_totals' => $cart_totals,
-            'coupon_show' => 0
+            'cart_totals' => $cartTotal,
+            'coupon_show' => 0,
+            'priceShip'   => $shippingPrice
         ]);
     }
 }
