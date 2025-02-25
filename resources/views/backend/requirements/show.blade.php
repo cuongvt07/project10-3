@@ -79,6 +79,7 @@
                   <thead class=" text-primary">
                       <th>Sản Phẩm</th>
                       <th>Số Lượng</th>
+                      <th>Kích thước</th>
                       <th>Hình Ảnh</th>
                       <th>Giá</th>
                   </thead>
@@ -87,6 +88,7 @@
                   <tr>
                     <td>{{$item->product->product_name}}</td>
                     <td>{{$item->order_detail_quantity}}</td>
+                    <td>{{$item->wrist_measurement}}</td>
                     <td><img style="max-width: 110px" src="../images_product/{{$item->product->product_image}}" alt=""></td>
                     <td>{{number_format($item->order_detail_price)}}</td>
                   </tr>

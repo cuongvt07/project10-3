@@ -26,6 +26,7 @@ use Session;
 use Carbon\Carbon;
 use App\Mail\OrderDone;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 use App\Http\Services\CartService;
 
 class CartController extends Controller
@@ -33,6 +34,11 @@ class CartController extends Controller
     public $cart;
     public $coupon;
     public $cartService;
+    public $request;
+    public $shiping;
+
+    const STANDARD = 25000;
+    const EXPRESS = 50000;
 
     public function __construct(CartService $cartService, Request $request){
         $this->cartService = $cartService;
@@ -43,18 +49,7 @@ class CartController extends Controller
         $dataLogoFooter = SlideModel::where('type', 4)->first();
         $this->middleware(function ($request, $next) {
             $this->cart = Session::get('cart');
-            if ($this->cart) {
-                Session::put('priceShip', 25000);
-                $cart_total = $this->getTotal($this->cart);
-                $cart_totals = $this->getTotals($cart_total);
-                Session::put('totalCart', $cart_totals);
-            } else {
-                Session::forget('totalCart');
-            }
-            Session::save();
             $this->coupon = Session::get('coupon');
-            $this->totalCart = Session::get('totalCart');
-            
             return $next($request);
         });
         view()->share(['dataCategory' => $dataCategory,
@@ -126,7 +121,7 @@ class CartController extends Controller
 
         $cart_total = $this->getTotal($this->cart);
 
-        $cart_totals = Session::get('totalCart');
+        $cart_totals = $this->getTotals($cart_total);
 
         return view('frontend.pages.checkout', [
             'dataCity' => $dataCity,
@@ -152,15 +147,17 @@ class CartController extends Controller
             }
         };
 
+        $this->coupon = Session::get('coupon');
         if($this->coupon){
             $dataCoupon = CouponModel::find($this->coupon['coupon_id']);
             $dataCoupon->user_id = $dataCoupon->user_id . $user_id .',';
             $dataCoupon->save();
         }
 
+        $this->shiping = Session::get('priceShip');
         $cart_total = $this->getTotal($this->cart);
 
-        $cart_totals = $this->getTotals($cart_total);
+        $cart_totals = $this->getTotals($cart_total, $this->shiping);
         $priceProduct = 0;
 
         foreach ($this->cart as $product) {
@@ -168,12 +165,11 @@ class CartController extends Controller
             $priceProduct+= $priceProductSub;
         }
 
-        $order_profit = Session::get('totalCart') - $priceProduct;
+        $order_profit = $cart_totals - $priceProduct;
 
         $dataCity = CityModel::find($request->city_id);
         $dataDistrict = DistrictModel::find($request->district_id);
         $coupon = $this->coupon;
-        $priceShip = Session::get('priceShip');
         $dataCustomerOrder = [
             'user_id' => $user_id,
             'order_note' => $request->order_note,
@@ -188,7 +184,7 @@ class CartController extends Controller
             'order_address' => $request->order_addres,
             'order_ward' => $request->order_addres,
             'order_profit' => $order_profit,
-            'order_total' => Session::get('totalCart'),
+            'order_total' => $cart_totals,
             'order_status' => 1,
             'created_at' => $today,
         ];
@@ -196,36 +192,33 @@ class CartController extends Controller
         Session::put('dataCustomer', $dataCustomerOrder);
         Session::save();
         if($request->order_pay_type == 2){
-            $order_total = Session::get('totalCart');
             return view('frontend.vnpay.index', [
-                'order_total' => $order_total,
+                'order_total' => $cart_totals,
                 'order_pay_type' => $request->order_pay_type,
                 'dataCustomerOrder' => Session::get('dataCustomer'),
                 'cart' => $this->cart,
                 'cart_totals' => $cart_totals,
                 'cart_total' => $cart_total,
-                'priceShip' => $priceShip,
-                'coupon' => $coupon,
+                'priceShip' => $this->shiping,
+                'coupon' => $coupon['coupon_show'],
             ]);
         } elseif ($request->order_pay_type == 3){
-            $order_total = Session::get('totalCart');
             return view('frontend.vnpay.index', [
-                'order_total' => $order_total,
+                'order_total' => $cart_totals,
                 'order_pay_type' => $request->order_pay_type,
                 'dataCustomerOrder' => Session::get('dataCustomer'),
                 'cart' => $this->cart,
                 'cart_totals' => $cart_totals,
                 'cart_total' => $cart_total,
-                'priceShip' => $priceShip,
-                'coupon' => $coupon,
+                'priceShip' =>  $this->shiping,
+                'coupon' => $coupon['coupon_show'],
             ]);
         }elseif ($request->order_pay_type == 4){
-            $order_total = Session::get('totalCart');
             return view('frontend.vnpay.index', [
-                'order_total' => $order_total,
+                'order_total' => $cart_totals,
                 'order_pay_type' => $request->order_pay_type,
-                'priceShip' => $priceShip,
-                'coupon' => $coupon,
+                'priceShip' =>  $this->shiping,
+                'coupon' => $coupon['coupon_show'],
             ]);
         }
         else {
@@ -242,6 +235,7 @@ class CartController extends Controller
             $dataOrder->order_profit = $dataCustomerOrderShow['order_profit'];
             $dataOrder->order_total = $dataCustomerOrderShow['order_total'];
             $dataOrder->order_status = 1;
+            $dataOrder->order_note = $request->order_note;
             $dataOrder->created_at = $dataCustomerOrderShow['created_at'];
 
             $dataOrder->save();
@@ -249,22 +243,21 @@ class CartController extends Controller
             $order_id = $dataOrder->order_id;//Lấy id order vừa insert vào bảng
 
             foreach($this->cart as $val){
-                //Xử lý xóa sản phẩm khi đặt đơn
                 $dataProduct = ProductModel::find($val['cart_id']);
                 $dataProduct->product_amount = $dataProduct->product_amount - $val['cart_quantity'];
                 $dataProduct->save();
-                //Kết Thúc Xử lý xóa sản phẩm khi đặt đơn
 
                 $dataOrderdetail = new OrderdetailModel();
                 $dataOrderdetail->order_id = $order_id;
                 $dataOrderdetail->product_id = $val['cart_id'];
                 $dataOrderdetail->order_detail_quantity = $val['cart_quantity'];
                 $dataOrderdetail->order_detail_price = $val['cart_price_sale'];
-                $dataOrderdetail->wrist_measurement = $val['wrist_measurement'];
+                $wrist_key = "wrist_measurement_{$val['cart_id']}";
+                $dataOrderdetail->wrist_measurement = $request->input($wrist_key, $val['wrist_measurement'] ?? null);
                 $dataOrderdetail->save();
             }
 
-//            $this->sendMailOrder($request->order_email, $dataOrder, $dataUser, $dataCustomerOrderShow['order_shipping'], $this->cart, $this->coupon, Session::get('priceShip'));
+           $this->sendMailOrder($request->order_email, $dataOrder, $dataUser, $dataCustomerOrderShow['order_shipping'], $this->cart, $this->coupon, $this->shiping);
 
             $this->deleteSession();
 
@@ -272,42 +265,51 @@ class CartController extends Controller
         }
     }
 
-    public function paymentMomo(Request $request){
+    public function paymentMomo(Request $request)
+    {
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
-
-        $partnerCode = 'MOMO5RGX20191128';
-        $accessKey = 'M8brj9K6E22vXoDB';
-        $secretKey = 'nqQiVSgDMy809JoPF6OzP5OdBUB550Y4';
-        $orderInfo = "Thanh toán đơn hàng".' '. $request->orderInfo;
-        $amount = str_replace(",", "", $request->amount);
-        $orderId = time() ."";
-        $redirectUrl = "/payment/return";
-        $ipnUrl = "/payment/return";
+        $partnerCode = "MOMO";
+        $accessKey = "F8BBA842ECF85";
+        $secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+        $orderInfo = "Thanh toán đơn hàng";
+        $redirectUrl = "http://127.0.0.1:8000/payment/return"; 
+        $ipnUrl = "http://127.0.0.1:8000/payment/return"; 
+        $requestId = (string)time();
+        $orderId = (string)time();
         $extraData = "";
-
-            $requestId = time() . "";
-            $requestType = "payWithATM"; // captureMoMoWallet payWithATM
-
-            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
-            $signature = hash_hmac("sha256", $rawHash, $secretKey);
-            $data = array('partnerCode' => $partnerCode,
-                'partnerName' => "Test",
-                "storeId" => "MomoTestStore",
-                'requestId' => $requestId,
-                'amount' => $amount,
-                'orderId' => $orderId,
-                'orderInfo' => $orderInfo,
-                'redirectUrl' => $redirectUrl,
-                'ipnUrl' => $ipnUrl,
-                'lang' => 'vi',
-                'extraData' => $extraData,
-                'requestType' => $requestType,
-                'signature' => $signature);
-            $result = $this->execPostRequest($endpoint, json_encode($data));
-            $jsonResult = json_decode($result, true);
-
-            return redirect()->to( $jsonResult['payUrl']);
-
+    
+        $amount = str_replace(',', '', $request->amount);
+        if (!is_numeric($amount) || $amount <= 0) {
+            return redirect()->back()->with('msgError', 'Số tiền không hợp lệ.');
+        }
+    
+        $rawHash = "accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=captureWallet";
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+    
+        $data = [
+            'partnerCode' => $partnerCode,
+            'partnerName' => "MoMo Payment",
+            'storeId' => "MOMOStore",
+            'requestId' => $requestId,
+            'amount' => (int)$amount, 
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => 'captureWallet',
+            'signature' => $signature
+        ];
+    
+        $result = $this->execPostRequest($endpoint, json_encode($data));
+        $jsonResult = json_decode($result, true);
+    
+    
+        if (!$jsonResult || !isset($jsonResult['payUrl']) || $jsonResult['resultCode'] !== 0) {
+            return redirect()->back()->with('msgError', 'Không thể tạo thanh toán MoMo. Vui lòng thử lại.');
+        }
+        return redirect()->to($jsonResult['payUrl']);
     }
 
     //Tạo thanh toán bằng vn pay
@@ -319,7 +321,12 @@ class CartController extends Controller
         $vnp_TxnRef = rand(1,10000);
         $vnp_OrderInfo = "Thanh toán hóa đơn phí dich vụ";
         $vnp_OrderType = 'billpayment';
-        $vnp_Amount = $request->input('amount') * 100;
+        $vnp_Amount = str_replace(',', '', $request->input('amount'));
+
+        // Kiểm tra xem amount có phải là số hợp lệ không
+        if (!is_numeric($vnp_Amount) || $vnp_Amount <= 0) {
+            return redirect()->back()->with('msgError', 'Số tiền không hợp lệ. Vui lòng kiểm tra lại.');
+        }
         $vnp_Locale = 'vn';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
 
@@ -501,8 +508,9 @@ class CartController extends Controller
     }
 
     //Hàm xử lý tính tổng giỏ hàng
-    public function getTotals($cart_total){
+    public function getTotals($cart_total, $shipping = 0){
         $cart_totals = 0;
+        $this->coupon = Session::get('coupon');
         if($this->coupon){
             if($this->coupon['coupon_status'] == 1){
                 // $coupon_cart = $coupon['coupon_value'] . ' %';
@@ -510,15 +518,15 @@ class CartController extends Controller
             }
             else if($this->coupon['coupon_status'] == 2){
                 // $coupon_cart = $coupon['coupon_value'] . ' VNĐ';
+
                 $cart_totals = $cart_total - $this->coupon['coupon_value'];
             }
         }
         else{
             $cart_totals = $cart_total;
         }
-        $cart_totals += Session::get('priceShip');
-        Session::put('totalCart', $cart_totals);
-        Session::save();
+        
+        $cart_totals = $cart_totals + $shipping;
 
         return $cart_totals;
     }
@@ -567,97 +575,71 @@ class CartController extends Controller
     }
 
     //Hàm xử lý thêm mã giảm giá và check mã giảm giá
-    public function addCouponCart(Request $request) {
+    public function addCouponCart(Request $request){
         $data = CouponModel::where('coupon_code', $request->coupon_code)->first();
-        $checkUse = CouponModel::where('coupon_code', $request->coupon_code)
-                    ->where('user_id', 'LIKE', '%' . Auth::id() . '%')
-                    ->first();
+        $checkUse = CouponModel::where('coupon_code', $request->coupon_code)->where('user_id', 'LIKE', '%'.Auth::id().'%')->first();
         $today = Carbon::today('Asia/Ho_Chi_Minh');
-    
-        $cart_total = $this->totalCart;
+        $cart_total = $this->getTotal($this->cart);
 
-        $result = [
-            'status' => false,
-            'message' => '',
-            'coupon_value' => 0,
-            'cart_totals' => $cart_total,
-            'coupon_show' => 0
-        ];
-    
-        if ($data) {
-            if ($data->coupon_status != 3) {
-                if (!$checkUse) {
-                    if ($today < $data->coupon_expiry) {
-                        if ($data->coupon_status == 1) {
-                            $coupon_value = [
-                                'coupon_status' => $data->coupon_status,
-                                'coupon_value'  => $data->coupon_value,
-                                'coupon_id'     => $data->coupon_id,
-                                'coupon_show'   => $data->coupon_value . ' %',
-                            ];
-                        } else {
-                            $coupon_value = [
-                                'coupon_status' => $data->coupon_status,
-                                'coupon_value'  => $data->coupon_value,
-                                'coupon_id'     => $data->coupon_id,
-                                'coupon_show'   => number_format($data->coupon_value) . ' VNĐ',
-                            ];
-                        }
-                        Session::put('coupon', $coupon_value);
-                        Session::save();
-                        $cart_totals = $this->getTotals($cart_total);
-                        
-                        
-                        $result = [
-                            'status' => true,
-                            'message' => 'Bạn đã áp dụng thành công mã ' . $data->coupon_name,
-                            'coupon_value' => $data->coupon_value,
-                            'cart_totals' => $cart_totals,
-                            'coupon_show' => Session::get('coupon')['coupon_show']
-                        ];
-                    } else {
-                        Session::forget('coupon');
-                        $result = [
-                            'status' => false,
-                            'message' => 'Mã giảm giá đã hết hạn',
-                            'coupon_value' => 0,
-                            'cart_totals' => $cart_total,
-                            'coupon_show' => 0
-                        ];
-                    }
-                } else {
-                    Session::forget('coupon');
-                    $result = [
-                        'status' => false,
-                        'message' => 'Bạn đã dùng mã giảm giá này rồi',
-                        'coupon_value' => 0,
-                        'cart_totals' => $cart_total,
-                        'coupon_show' => 0
-                    ];
-                }
-            } else {
-                Session::forget('coupon');
-                $result = [
-                    'status' => false,
-                    'message' => 'Mã giảm giá đã hết',
-                    'coupon_value' => 0,
-                    'cart_totals' => $cart_total,
-                    'coupon_show' => 0
-                ];
-            }
+        $option_transfer = $request->selectedShippingOption;
+        if ($option_transfer == 'standard') {
+            $shippingPrice = self::STANDARD;
+        } elseif ($option_transfer == 'express') {
+            $shippingPrice = self::EXPRESS;
         } else {
-            Session::forget('coupon');
-            $result = [
-                'status' => false,
-                'message' => 'Mã giảm giá không tồn tại',
-                'coupon_value' => 0,
-                'cart_totals' => $cart_total,
-                'coupon_show' => 0
-            ];
+            return redirect()->back()->with('msgError', 'Invalid shipping option selected');
         }
-    
+        $result = [];
+
+        if($data){
+            if($data->coupon_status != 3){
+                if(!$checkUse){
+                    if($today < $data->coupon_expiry){
+                        if($data->coupon_status == 1){
+                            $coupon_value = [
+                                'coupon_status' => $data->coupon_status,
+                                'coupon_value' => $data->coupon_value,
+                                'coupon_id' => $data->coupon_id,
+                                'coupon_show' => $data->coupon_value . ' %',
+                            ];
+                            Session::put('coupon', $coupon_value);
+                        }
+                        else{
+                            $coupon_value = [
+                                'coupon_status' => $data->coupon_status,
+                                'coupon_value' => $data->coupon_value,
+                                'coupon_id' => $data->coupon_id,
+                                'coupon_show' => number_format($data->coupon_value) . ' VNĐ',
+                            ];
+                            Session::put('coupon', $coupon_value);
+                        }
+                        //Tính lại tổng khi add mã
+                        $cart_totals = $this->getTotals($cart_total, $shippingPrice);
+
+                        $result = ['Bạn đã áp dụng thành công mã '. $data->coupon_name, $data->coupon_value, $cart_totals, Session::get('coupon')['coupon_show']];
+                    }
+                    else{
+                        Session::forget('coupon');
+                        $result = ['Mã giảm giá đã hết hạn', 0, $cart_total, 0];
+                    }
+                }
+                else{
+                    Session::forget('coupon');
+                    $result = ['Bạn đã dùng mã giảm giá này rồi', 0, $cart_total, 0];
+                }
+            }
+            else{
+                Session::forget('coupon');
+                $result = ['Mã giảm giá đã hết', 0, $cart_total, 0];
+            }
+        }
+        else{
+            Session::forget('coupon');
+            $result = ['Mã giảm giá không tồn tại', 0, $cart_total, 0];
+        }
+
         return $result;
-    }    
+    }
 
     //Hàm get sản phẩm trong cart offset ajax
     public function getDataCart(){
@@ -749,52 +731,45 @@ class CartController extends Controller
     {
         $shippingPrice = false;
         $option_transfer = $request->selected_shipping_option;
-    
         if ($option_transfer == 'standard') {
-            $shippingPrice = 25000;
+            $shippingPrice = self::STANDARD;
         } elseif ($option_transfer == 'express') {
-            $shippingPrice = 50000;
+            $shippingPrice = self::EXPRESS;
         } else {
             return redirect()->back()->with('msgError', 'Invalid shipping option selected');
         }
-    
+
         Session::put('priceShip', $shippingPrice);
+        $cart_price_ship = 0;
         $cart_total = $this->getTotal($this->cart);
-        $subTotal = $cart_total + $shippingPrice;
-    
-        if (Session::has('coupon')) {
-            $coupon = Session::get('coupon');
-            if ($coupon['coupon_status'] == 1) { // Giảm theo phần trăm
-                $discount = $cart_total * ($coupon['coupon_value'] / 100);
-                $finalTotal = $subTotal - $discount;
-            } elseif ($coupon['coupon_status'] == 2) { // Giảm theo tiền cố định
-                $finalTotal = $cart_total - $coupon['coupon_value'] + $shippingPrice;
-            } else {
-                $finalTotal = $subTotal;
-            }
-        } else {
-            $finalTotal = $subTotal;
-        }
-    
-        Session::put('totalCart', $finalTotal);
-        Session::save(); // Bảo đảm session được lưu
-    
-        return [$cart_total, number_format($finalTotal), $shippingPrice];
+        
+        $cart_totals = $this->getTotals($cart_total, $shippingPrice);
+
+        return $result = [$cart_price_ship, number_format($cart_totals), $shippingPrice];
     }
 
     public function deleteCouponCart(Request $request)
     {
         Session::forget('coupon');
-    
-        $shippingPrice = $this->coupon;
-        $cartTotal = $this->totalCart + $shippingPrice['coupon_value'];
-    
+        $option_transfer = $request->selectedShippingOption;
+        if ($option_transfer == 'standard') {
+            $shippingPrice = self::STANDARD;
+        } elseif ($option_transfer == 'express') {
+            $shippingPrice = self::EXPRESS;
+        } else {
+            return redirect()->back()->with('msgError', 'Invalid shipping option selected');
+        }
+
+        $cart_total = $this->getTotal($this->cart);
+        $cart_totals = $this->getTotals($cart_total, $shippingPrice);
+        
+
         return response()->json([
             'status'      => true,
             'message'     => 'Coupon đã được xóa thành công',
-            'cart_totals' => $cartTotal,
-            'coupon_show' => 0,
-            'priceShip'   => $shippingPrice
+            'cart_totals' => $cart_totals,
+            'coupon_show' => 0
         ]);
     }
+
 }

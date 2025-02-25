@@ -2527,8 +2527,7 @@ a.shipping-calculator-button:hover{
     margin-bottom: 70px;
 }
 .ht__coupon__code {
-    background: #ebebeb none repeat scroll 0 0;
-    padding: 20px;
+    padding: 5px;
 }
 .ht__coupon__code span {
     color: #3f3f3f;
@@ -2537,8 +2536,8 @@ a.shipping-calculator-button:hover{
     text-transform: uppercase;
 }
 .coupon__box {
-    margin-top: 19px;
     position: relative;
+    border: 1px solid #ebebeb;
 }
 .coupon__box input {
     background: #ffffff none repeat scroll 0 0;

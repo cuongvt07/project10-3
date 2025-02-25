@@ -23,7 +23,6 @@ class OrderDone extends Mailable
     public function __construct($data = null)
     {
         $this->data = $data;
-        dd($this->data);
     }
 
     /**
@@ -33,7 +32,7 @@ class OrderDone extends Mailable
      */
     public function build()
     {
-        return $this->from('pvc2000atk@gmail.com', 'Tâm Trà')
+        return $this->from('pvc2000atk@gmail.com', 'Rolex')
             ->subject("Đặt Hàng Thành Công")
             ->view('mail.orderdone', ['data' => $this->data]);
     }

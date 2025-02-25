@@ -1562,3 +1562,14 @@ nav.mean-nav {
 .banner-item {
   width: 50%;
 }
+
+.wrist-measurement {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.single-input {
+  margin-top: 10px;
+}

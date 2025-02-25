@@ -23,7 +23,23 @@
                                 </thead>
                                 <tbody>
                                 @foreach ($data as $item)
-                                    <tr>
+                                    @php
+                                        $rowClass = '';
+                                        if ($item->order_status == 5) {
+                                            $rowClass = 'style=background-color:#d4edda'; // green
+                                        } elseif ($item->order_status == 6) {
+                                            $rowClass = 'style=background-color:#f8d7da'; // red
+                                        } elseif ($item->order_status == 1) {
+                                            $rowClass = 'style=background-color:#fff3cd'; // yellow
+                                        } elseif ($item->order_status == 2) {
+                                            $rowClass = 'style=background-color:#cce5ff'; // blue
+                                        } elseif ($item->order_status == 3) {
+                                            $rowClass = 'style=background-color:#b8daff'; // dark blue
+                                        } elseif ($item->order_status == 4) {
+                                            $rowClass = 'style=background-color:#e2e3e5'; // light gray
+                                        }
+                                    @endphp
+                                    <tr {!! $rowClass !!}>
                                         <td>#{{$item->order_id}}</td>
                                         <td>{{$item->user->user_name ?? 'Khách hàng'}}</td>
                                         <td>{{number_format($item->order_total)}}</td>

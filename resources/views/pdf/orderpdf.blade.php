@@ -21,7 +21,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h3 class="text-center">VINANEON</h3>
+                <h3 class="text-center">ROLEX SHOP</h3>
                 <p class="text-center">Đơn hàng ngày {{date('d/m/Y',strtotime($dataOrder->created_at))}}</p>
             </div>
         </div>
