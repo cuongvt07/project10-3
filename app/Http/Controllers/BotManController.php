@@ -19,7 +19,7 @@ class BotManController extends Controller
 
         $botman->fallback(function ($botman) {
             $this->optionConversation($botman);
-            $botman->reply("Cảm ơn quý khách đã sử dụng dịch vụ bên Tâm Trà!");
+            $botman->reply("Cảm ơn quý khách đã sử dụng dịch vụ bên ROLEX SHOP!");
         });
         $botman->listen();
     }

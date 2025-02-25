@@ -36,7 +36,7 @@
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <address>
-                                    <strong>Tâm Trà Thái Nguyên</strong>
+                                    <strong>ROLEX SHOP</strong>
                                     <br>
                                     Số 10, Trần Phú, HĐ, HN
                                     <br>
@@ -54,8 +54,8 @@
                                            id="orderInfo"
                                            name="orderInfo"
                                            type="hidden"
-                                           value="tâm trà {{auth()->user()->user_id}}" />
-                                    <em>Mã đơn hàng: Tâm Trà {{auth()->user()->user_id}}</em>
+                                           value="ROLEX SHOP {{auth()->user()->user_id}}" />
+                                    <em>Mã đơn hàng: ROLEX SHOP {{auth()->user()->user_id}}</em>
                                 </p>
                             </div>
                         </div>

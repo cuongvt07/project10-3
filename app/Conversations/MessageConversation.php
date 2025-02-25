@@ -11,8 +11,8 @@ class MessageConversation extends Conversation
 {
     public function run()
     {
-        $this->bot->reply("Hãy liên hệ với chúng tôi qua chức năng Chat ở góc trái Hoặc qua Zalo: 0943206425 (Tâm Trà)
-         Hoặc qua Facebook: <a href='https://www.facebook.com/profile.php?id=100004954485807'>Tâm Trà</a>");
+        $this->bot->reply("Hãy liên hệ với chúng tôi qua chức năng Chat ở góc trái Hoặc qua Zalo: 0943206425 (ROLEX SHOP)
+         Hoặc qua Facebook: <a href='https://www.facebook.com/profile.php?id=100004954485807'>ROLEX SHOP)</a>");
 
         $this->bot->typesAndWaits(1);
 

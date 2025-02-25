@@ -12,8 +12,8 @@ class CallConversation extends Conversation
     public function run()
     {
         $this->bot->reply("Hãy liên hệ với chúng tôi qua Hotline: 0943206425
-         Hoặc qua Zalo: 0943206425 (Tâm Trà)
-         Hoặc qua Facebook: <a href='https://www.facebook.com/profile.php?id=100004954485807'>Tâm Trà</a>");
+         Hoặc qua Zalo: 0943206425 (ROLEX SHOP)
+         Hoặc qua Facebook: <a href='https://www.facebook.com/profile.php?id=100004954485807'>ROLEX SHOP</a>");
 
         $this->bot->typesAndWaits(1);
 
