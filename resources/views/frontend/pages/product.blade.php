@@ -6,7 +6,7 @@
     <!-- Start Product Details Top -->
     <div class="htc__product__details__top">
         <div class="container">
-            <div class="row">
+            <div class="row" style="background: #000000; padding: 20px;">
                 <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
                     <div class="htc__product__details__tab__content">
                         <!-- Start Product Big Images -->

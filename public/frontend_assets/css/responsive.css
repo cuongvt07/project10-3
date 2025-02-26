@@ -1416,9 +1416,14 @@ nav.mean-nav {
     display: inline-block;
 }
 
+.product-price {
+  display: inline-flex;
+  align-items: center;
+}
+
 .starrating > label
 {
-    color: #222222; /* Start color when not clicked */
+    color: #fffe00; /* Start color when not clicked */
 }
 
 .starrating > input:checked ~ label
@@ -1447,10 +1452,10 @@ nav.mean-nav {
 }
 
 .product-price span.pro-price {
-    font-size: 20px;
+    font-size: 24PX;
     opacity: .92;
     font-weight: bold;
-    color: red;
+    color: #FFFF;
 }
 
 .product-price del {
